@@ -24,25 +24,24 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       const elapsed = (now - start) / 1000;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Darkness for first 0.5s
       if (elapsed < 0.5) {
         requestAnimationFrame(draw);
         return;
       }
 
-      // Central glow expands 0.5s-2s
+      // Central crimson glow
       const glowProgress = Math.min(1, (elapsed - 0.5) / 1.5);
       const glowR = 20 + glowProgress * 100;
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
       grad.addColorStop(0, `rgba(121,12,12,${0.5 * glowProgress})`);
-      grad.addColorStop(0.5, `rgba(214,184,90,${0.15 * glowProgress})`);
+      grad.addColorStop(0.5, `rgba(26,58,255,${0.1 * glowProgress})`);
       grad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
       ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Ghost network sphere 1s-3s
+      // Ghost network sphere
       if (elapsed > 1 && elapsed < 3) {
         const ghostAlpha = elapsed < 2
           ? Math.min(0.15, (elapsed - 1) * 0.15)
@@ -62,31 +61,32 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.lineTo(nx, ny);
-          ctx.strokeStyle = `rgba(255,255,255,${ghostAlpha * 0.7})`;
+          ctx.strokeStyle = `rgba(26,58,255,${ghostAlpha * 0.5})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
       }
 
-      // Gold pulse rings
+      // Blue pulse ring
       if (elapsed > 2) {
         const p1 = (elapsed - 2) / 1.5;
         if (p1 < 1) {
           const r = p1 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(214,184,90,${(1 - p1) * 0.6})`;
+          ctx.strokeStyle = `rgba(26,58,255,${(1 - p1) * 0.6})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
+      // Muted yellow pulse ring
       if (elapsed > 2.6) {
         const p2 = (elapsed - 2.6) / 1.5;
         if (p2 < 1) {
           const r = p2 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(214,184,90,${(1 - p2) * 0.7})`;
+          ctx.strokeStyle = `rgba(196,168,79,${(1 - p2) * 0.5})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }

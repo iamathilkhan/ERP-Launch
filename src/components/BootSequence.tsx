@@ -9,7 +9,6 @@ const LINES = [
   "System Ready. Awaiting Authorization...",
 ];
 
-// One typo per line: [charIndex, wrongChar]
 const TYPOS: [number, string][] = [
   [14, "x"],
   [15, "s"],
@@ -33,16 +32,13 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
   const typoStateRef = useRef<"none" | "typed" | "paused" | "backspaced">("none");
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
-  // Cursor blink
   useEffect(() => {
     const iv = setInterval(() => setShowCursor((p) => !p), 530);
     return () => clearInterval(iv);
   }, []);
 
-  // Typing engine
   useEffect(() => {
     if (currentLine >= LINES.length) {
-      // All done, wait then exit
       timeoutRef.current = setTimeout(() => setExiting(true), 800);
       return;
     }
@@ -51,9 +47,7 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
     const [typoIdx, typoChar] = TYPOS[currentLine];
 
     if (currentChar <= line.length) {
-      // Check typo
       if (currentChar === typoIdx && typoStateRef.current === "none") {
-        // Type wrong char
         typoStateRef.current = "typed";
         setDisplayLines((prev) => {
           const next = [...prev];
@@ -62,7 +56,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
         });
         timeoutRef.current = setTimeout(() => {
           typoStateRef.current = "paused";
-          // Backspace
           timeoutRef.current = setTimeout(() => {
             setDisplayLines((prev) => {
               const next = [...prev];
@@ -70,7 +63,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
               return next;
             });
             typoStateRef.current = "backspaced";
-            // Now type correct char
             timeoutRef.current = setTimeout(() => {
               typoStateRef.current = "none";
               setDisplayLines((prev) => {
@@ -85,7 +77,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
         return;
       }
 
-      // Normal typing
       const isSpace = line[currentChar - 1] === " ";
       const delay = isSpace ? 120 + Math.random() * 80 : 35 + Math.random() * 20;
 
@@ -98,7 +89,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
         setCurrentChar(currentChar + 1);
       }, delay);
     } else {
-      // Line complete - flicker
       setFlickering(currentLine);
       timeoutRef.current = setTimeout(() => {
         setFlickering(-1);
@@ -115,12 +105,10 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
     return () => clearTimeout(timeoutRef.current);
   }, [currentLine, currentChar]);
 
-  // Init first line
   useEffect(() => {
     setDisplayLines([""]);
   }, []);
 
-  // Exit animation complete
   useEffect(() => {
     if (exiting) {
       const t = setTimeout(onComplete, 600);
@@ -149,10 +137,10 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
               style={{
                 fontSize: "clamp(0.75rem, 1.5vw, 1rem)",
                 color: isFinal
-                  ? "rgba(255,255,255,0.75)"
+                  ? "rgba(210,220,255,0.85)"
                   : isActive
-                  ? "rgba(255,255,255,0.75)"
-                  : "rgba(255,255,255,0.35)",
+                  ? "rgba(210,220,255,0.85)"
+                  : "rgba(180,195,255,0.35)",
                 opacity: isFlickering ? 0.4 : 1,
               }}
               initial={{ opacity: 0 }}
@@ -171,7 +159,7 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
                 <span
                   style={{
                     opacity: showCursor ? 1 : 0,
-                    color: "rgba(255,255,255,0.75)",
+                    color: "#1a3aff",
                   }}
                 >
                   |
