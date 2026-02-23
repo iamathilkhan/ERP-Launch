@@ -14,207 +14,193 @@ interface SphereNode {
   alpha: number;
   layer: "primary" | "secondary" | "tertiary";
   label?: string;
-  z?: number;
+  parentIdx?: number;
 }
 
-interface SphereLink {
-  a: number;
-  b: number;
-  alpha: number;
-  lineWidth: number;
-  color: "blue" | "yellow";
-}
-
-interface SphereData {
-  nodes: SphereNode[];
-  primaryCount: number;
-  secondaryStart: number;
-  secondaryCount: number;
-  tertiaryStart: number;
-  tertiaryCount: number;
-  links: SphereLink[];
-  cx: number;
-  cy: number;
-  sphereRadius: number;
-}
-
-const PRIMARY_LABELS = ["Faculty", "Students", "Exams", "Attendance", "Timetable"];
+const PRIMARY_LABELS = ["Faculty", "Students", "Exams", "Attendance", "Finance"];
 const CRIMSON = { r: 121, g: 12, b: 12 };
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-
-function buildSphereData(w: number, h: number): SphereData {
-  const cx = w / 2;
-  const cy = h / 2;
-  const sphereRadius = Math.min(w, h) * 0.32;
-  const nodes: SphereNode[] = [];
-
-  // Primary nodes — pentagon at 55% radius
-  for (let i = 0; i < 5; i++) {
-    const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
-    const x = cx + sphereRadius * 0.55 * Math.cos(angle);
-    const y = cy + sphereRadius * 0.55 * Math.sin(angle);
-    nodes.push({
-      x, y, baseX: x, baseY: y,
-      radius: 6, alpha: 0.9, layer: "primary",
-      label: PRIMARY_LABELS[i], z: 0.8,
-    });
-  }
-
-  const secondaryStart = nodes.length;
-  // Secondary nodes — 12 per primary using golden angle spiral on sphere surface
-  for (let pi = 0; pi < 5; pi++) {
-    for (let i = 0; i < 12; i++) {
-      const t = i / 12;
-      const inclination = Math.acos(1 - 2 * t);
-      const azimuth = GOLDEN_ANGLE * i + pi * 1.2566; // offset per primary
-
-      const x3d = Math.sin(inclination) * Math.cos(azimuth);
-      const y3d = Math.sin(inclination) * Math.sin(azimuth);
-      const z3d = Math.cos(inclination);
-
-      const depthFactor = (z3d + 1) / 2;
-      const projectedR = sphereRadius * (0.5 + depthFactor * 0.45);
-
-      const x = cx + projectedR * x3d;
-      const y = cy + projectedR * y3d;
-
-      nodes.push({
-        x, y, baseX: x, baseY: y,
-        radius: 1.5 + depthFactor * 2.5,
-        alpha: 0.2 + depthFactor * 0.65,
-        layer: "secondary", z: z3d,
-      });
-    }
-  }
-  const secondaryCount = nodes.length - secondaryStart;
-
-  const tertiaryStart = nodes.length;
-  // Tertiary nodes — 480 total using Fibonacci sphere
-  const totalTertiary = 480;
-  for (let i = 0; i < totalTertiary; i++) {
-    const t = i / totalTertiary;
-    const inclination = Math.acos(1 - 2 * t);
-    const azimuth = GOLDEN_ANGLE * i;
-
-    const x3d = Math.sin(inclination) * Math.cos(azimuth);
-    const y3d = Math.sin(inclination) * Math.sin(azimuth);
-    const z3d = Math.cos(inclination);
-
-    const depthFactor = (z3d + 1) / 2;
-    const projectedR = sphereRadius * (0.48 + depthFactor * 0.48);
-
-    const x = cx + projectedR * x3d;
-    const y = cy + projectedR * y3d;
-
-    nodes.push({
-      x, y, baseX: x, baseY: y,
-      radius: 0.8 + depthFactor * 1.2,
-      alpha: 0.1 + depthFactor * 0.4,
-      layer: "tertiary", z: z3d,
-    });
-  }
-  const tertiaryCount = nodes.length - tertiaryStart;
-
-  // Links — nearest neighbor within 45px threshold
-  const links: SphereLink[] = [];
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const dx = nodes[i].baseX - nodes[j].baseX;
-      const dy = nodes[i].baseY - nodes[j].baseY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 45) {
-        const a = nodes[i];
-        const b = nodes[j];
-        const minAlpha = Math.min(a.alpha, b.alpha);
-
-        let lineWidth = 0.5;
-        let color: "blue" | "yellow" = "blue";
-        if (a.layer === "primary" || b.layer === "primary") {
-          lineWidth = 1.5;
-          color = "blue";
-        } else if (a.layer === "secondary" || b.layer === "secondary") {
-          lineWidth = 1;
-          color = "yellow";
-        }
-
-        links.push({ a: i, b: j, alpha: minAlpha * 0.6, lineWidth, color });
-      }
-    }
-  }
-
-  return {
-    nodes, primaryCount: 5,
-    secondaryStart, secondaryCount,
-    tertiaryStart, tertiaryCount,
-    links, cx, cy, sphereRadius,
-  };
-}
 
 const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dataRef = useRef<SphereData | null>(null);
-  const phaseRef = useRef<"A" | "B" | "C" | "D" | "done">("A");
-  const elapsedRef = useRef(0);
-  const lastTimeRef = useRef(0);
-  const driftRef = useRef(0);
-  const rafRef = useRef(0);
+  const [phase, setPhase] = useState<"A" | "B" | "C" | "D" | "done">("A");
   const [labels, setLabels] = useState<{ x: number; y: number; text: string; opacity: number }[]>([]);
-  const [fadeOut, setFadeOut] = useState(false);
 
-  // Initialize sphere data once
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
-
-    if (!dataRef.current) {
-      dataRef.current = buildSphereData(w, h);
-    }
-  }, []);
-
-  // Continuous animation loop — never interrupted between phases
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    lastTimeRef.current = performance.now();
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const sphereRadius = Math.min(w, h) * 0.32;
+    const primaryRadius = sphereRadius * 0.45;
+
+    // Depth factor helper
+    const depthFactor = (x: number, y: number) => {
+      const dist = Math.hypot(x - cx, y - cy);
+      return Math.min(1, dist / sphereRadius);
+    };
+
+    // Create primary nodes
+    const allNodes: SphereNode[] = [];
+    const primaryIndices: number[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + Math.cos(angle) * primaryRadius;
+      const y = cy + Math.sin(angle) * primaryRadius;
+      const df = depthFactor(x, y);
+      primaryIndices.push(allNodes.length);
+      allNodes.push({
+        x, y, baseX: x, baseY: y,
+        radius: 1.5 + df * 3.5,
+        alpha: 0.2 + df * 0.75,
+        layer: "primary",
+        label: PRIMARY_LABELS[i],
+      });
+    }
+
+    // Create secondary nodes (12-15 per primary)
+    const secondaryIndices: number[] = [];
+    primaryIndices.forEach((pi) => {
+      const pn = allNodes[pi];
+      const count = 12 + Math.floor(Math.random() * 4);
+      for (let j = 0; j < count; j++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 80;
+        const x = pn.baseX + Math.cos(angle) * dist;
+        const y = pn.baseY + Math.sin(angle) * dist;
+        const df = depthFactor(x, y);
+        secondaryIndices.push(allNodes.length);
+        allNodes.push({
+          x, y, baseX: x, baseY: y,
+          radius: 1.5 + df * 3.5,
+          alpha: 0.2 + df * 0.75,
+          layer: "secondary",
+          parentIdx: pi,
+        });
+      }
+    });
+
+    // Create tertiary nodes (6-8 per secondary)
+    const tertiaryIndices: number[] = [];
+    secondaryIndices.forEach((si) => {
+      const sn = allNodes[si];
+      const count = 6 + Math.floor(Math.random() * 3);
+      for (let j = 0; j < count; j++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 20 + Math.random() * 50;
+        let x = sn.baseX + Math.cos(angle) * dist;
+        let y = sn.baseY + Math.sin(angle) * dist;
+        // Constrain to sphere
+        const dfc = Math.hypot(x - cx, y - cy);
+        if (dfc > sphereRadius) {
+          const scale = sphereRadius / dfc;
+          x = cx + (x - cx) * scale;
+          y = cy + (y - cy) * scale;
+        }
+        const df = depthFactor(x, y);
+        tertiaryIndices.push(allNodes.length);
+        allNodes.push({
+          x, y, baseX: x, baseY: y,
+          radius: 1.5 + df * 3.5,
+          alpha: 0.2 + df * 0.75,
+          layer: "tertiary",
+          parentIdx: si,
+        });
+      }
+    });
+
+    // Pre-compute links by distance
+    interface Link { a: number; b: number; type: "p-s" | "s-t" | "t-t" | "s-s" }
+    const links: Link[] = [];
+
+    // Primary-to-secondary
+    secondaryIndices.forEach((si) => {
+      const sn = allNodes[si];
+      if (sn.parentIdx !== undefined) links.push({ a: sn.parentIdx, b: si, type: "p-s" });
+    });
+
+    // Secondary-to-tertiary
+    tertiaryIndices.forEach((ti) => {
+      const tn = allNodes[ti];
+      if (tn.parentIdx !== undefined) links.push({ a: tn.parentIdx, b: ti, type: "s-t" });
+    });
+
+    // Cross-links within 50px threshold
+    const crossNodes = [...secondaryIndices, ...tertiaryIndices];
+    for (let i = 0; i < crossNodes.length; i++) {
+      for (let j = i + 1; j < crossNodes.length; j++) {
+        const a = allNodes[crossNodes[i]];
+        const b = allNodes[crossNodes[j]];
+        const dist = Math.hypot(a.baseX - b.baseX, a.baseY - b.baseY);
+        if (dist < 50) {
+          const aLayer = a.layer;
+          const bLayer = b.layer;
+          if (aLayer === "tertiary" && bLayer === "tertiary") {
+            links.push({ a: crossNodes[i], b: crossNodes[j], type: "t-t" });
+          } else if (aLayer === "secondary" && bLayer === "secondary") {
+            links.push({ a: crossNodes[i], b: crossNodes[j], type: "s-s" });
+          } else {
+            links.push({ a: crossNodes[i], b: crossNodes[j], type: "s-t" });
+          }
+        }
+      }
+    }
+
+    let elapsed = 0;
+    let lastTime = performance.now();
+    let currentPhase: "A" | "B" | "C" | "D" | "done" = "A";
+    let driftOffset = 0;
+    let rafId = 0;
+
+    const linkStyle = (type: Link["type"]): [number, number] => {
+      // [opacity, lineWidth]
+      switch (type) {
+        case "p-s": return [0.5, 1.5];
+        case "s-t": return [0.32, 0.8];
+        case "s-s": return [0.35, 1];
+        case "t-t": return [0.2, 0.5];
+      }
+    };
 
     const draw = (now: number) => {
-      const dt = (now - lastTimeRef.current) / 1000;
-      lastTimeRef.current = now;
-      elapsedRef.current += dt;
-      const elapsed = elapsedRef.current;
-      const data = dataRef.current;
-      if (!data) { rafRef.current = requestAnimationFrame(draw); return; }
-
-      const { nodes, primaryCount, secondaryStart, secondaryCount, tertiaryStart, tertiaryCount, links, cx, cy, sphereRadius } = data;
-      const w = canvas.width;
-      const h = canvas.height;
-
-      // Phase transitions — only update ref, never restart loop
-      if (phaseRef.current === "A" && elapsed > 5) phaseRef.current = "B";
-      else if (phaseRef.current === "B" && elapsed > 12) phaseRef.current = "C";
-      else if (phaseRef.current === "C" && elapsed > 16) phaseRef.current = "D";
-      else if (phaseRef.current === "D" && elapsed > 18) {
-        phaseRef.current = "done";
-        setFadeOut(true);
-        return; // stop loop
-      }
-
-      const phase = phaseRef.current;
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      elapsed += dt;
+      driftOffset += 0.15; // lateral drift per frame
 
       ctx.clearRect(0, 0, w, h);
 
-      // Lateral drift for rotation illusion
-      driftRef.current += 0.15;
-      const drift = driftRef.current;
+      // Phase transitions
+      if (currentPhase === "A" && elapsed > 5) { currentPhase = "B"; setPhase("B"); }
+      else if (currentPhase === "B" && elapsed > 12) { currentPhase = "C"; setPhase("C"); }
+      else if (currentPhase === "C" && elapsed > 16) { currentPhase = "D"; setPhase("D"); }
+      else if (currentPhase === "D" && elapsed > 18) { currentPhase = "done"; setPhase("done"); }
 
-      // Central core — CRIMSON
+      // Apply lateral drift (rotation illusion) - wrap nodes
+      const wrapWidth = sphereRadius * 2.5;
+      allNodes.forEach((node) => {
+        node.x = node.baseX + driftOffset;
+        // Wrap around
+        const relX = node.x - cx;
+        if (relX > wrapWidth / 2) {
+          node.x -= wrapWidth;
+          node.baseX -= wrapWidth;
+        }
+        // Recalculate depth
+        const df = depthFactor(node.x, node.y);
+        node.radius = 1.5 + df * 3.5;
+        node.alpha = 0.2 + df * 0.75;
+      });
+
+      // Central core - CRIMSON
       const pulseScale = 1 + Math.sin(elapsed * Math.PI) * 0.04;
       const coreR = 12 * pulseScale;
 
@@ -232,112 +218,121 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
       ctx.fillStyle = `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},0.9)`;
       ctx.fill();
 
-      // Calculate drifted positions (without mutating baseX)
-      const driftedX = (node: SphereNode) => {
-        let nx = node.baseX + drift;
-        const relX = nx - cx;
-        const wrapW = sphereRadius * 2.5;
-        while (relX > wrapW / 2) nx -= wrapW;
-        return nx;
-      };
+      // Phase A: Primary nodes animate in
+      if (currentPhase === "A" || currentPhase === "B" || currentPhase === "C" || currentPhase === "D") {
+        primaryIndices.forEach((pi, i) => {
+          const node = allNodes[pi];
+          const lineStart = i * 0.3;
+          const lineProgress = Math.max(0, Math.min(1, (elapsed - lineStart) / 0.8));
 
-      // Phase A: Primary nodes animate in (always draw once visible)
-      const labelData: { x: number; y: number; text: string; opacity: number }[] = [];
-
-      for (let i = 0; i < primaryCount; i++) {
-        const node = nodes[i];
-        const nx = driftedX(node);
-        const lineStart = i * 0.3;
-        const lineProgress = Math.max(0, Math.min(1, (elapsed - lineStart) / 0.8));
-
-        if (lineProgress > 0) {
-          const endX = cx + (nx - cx) * lineProgress;
-          const endY = cy + (node.baseY - cy) * lineProgress;
-          ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(endX, endY);
-          ctx.strokeStyle = "rgba(26,58,255,0.5)";
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-
-          if (lineProgress >= 1) {
+          if (lineProgress > 0) {
+            const endX = cx + (node.x - cx) * lineProgress;
+            const endY = cy + (node.y - cy) * lineProgress;
             ctx.beginPath();
-            ctx.arc(nx, node.baseY, node.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(26,58,255,${node.alpha * 0.8})`;
-            ctx.fill();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = `rgba(26,58,255,0.5)`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
 
-            if (node.label) {
-              labelData.push({ x: nx, y: node.baseY + 20, text: node.label, opacity: 0.6 });
+            if (lineProgress >= 1) {
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(26,58,255,${node.alpha * 0.8})`;
+              ctx.fill();
             }
           }
-        }
+        });
+
+        setLabels(primaryIndices
+          .map(pi => allNodes[pi])
+          .filter((_, i) => {
+            const lineStart = i * 0.3;
+            return elapsed - lineStart > 0.8;
+          })
+          .map(n => ({
+            x: n.x, y: n.y + 20, text: n.label || "", opacity: 0.6,
+          })));
       }
 
-      // Phase B+: secondary + tertiary nodes (opacity only increases, never decreases)
-      if (phase === "B" || phase === "C" || phase === "D") {
+      // Phase B+: secondary + tertiary nodes
+      if (currentPhase === "B" || currentPhase === "C" || currentPhase === "D") {
         const bElapsed = elapsed - 5;
 
         // Secondary nodes
-        for (let i = 0; i < secondaryCount; i++) {
-          const node = nodes[secondaryStart + i];
+        secondaryIndices.forEach((si, i) => {
+          const node = allNodes[si];
           const delay = i * 0.04;
           const progress = Math.max(0, Math.min(1, (bElapsed - delay) / 0.6));
-          if (progress <= 0) continue;
+          if (progress <= 0) return;
 
-          const nx = driftedX(node);
           ctx.beginPath();
-          ctx.arc(nx, node.baseY, node.radius * progress, 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, node.radius * progress, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(196,168,79,${node.alpha * 0.6 * progress})`;
           ctx.fill();
-        }
+        });
 
-        // Tertiary nodes (delayed)
+        // Tertiary nodes (delayed further)
         if (bElapsed > 1.5) {
-          for (let i = 0; i < tertiaryCount; i++) {
-            const node = nodes[tertiaryStart + i];
-            const delay = i * 0.005;
+          tertiaryIndices.forEach((ti, i) => {
+            const node = allNodes[ti];
+            const delay = i * 0.008;
             const progress = Math.max(0, Math.min(1, (bElapsed - 1.5 - delay) / 0.8));
-            if (progress <= 0) continue;
+            if (progress <= 0) return;
 
-            const nx = driftedX(node);
             ctx.beginPath();
-            ctx.arc(nx, node.baseY, node.radius * progress, 0, Math.PI * 2);
+            ctx.arc(node.x, node.y, node.radius * progress, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(26,58,255,${node.alpha * 0.4 * progress})`;
             ctx.fill();
-          }
+          });
         }
 
         // Links
         if (bElapsed > 0.5) {
           const linkProgress = Math.min(1, (bElapsed - 0.5) / 2);
-          for (const link of links) {
-            const a = nodes[link.a];
-            const b = nodes[link.b];
-            const ax = driftedX(a);
-            const bx = driftedX(b);
+          links.forEach((link) => {
+            const a = allNodes[link.a];
+            const b = allNodes[link.b];
+            // Only draw if nodes are somewhat visible
+            const aP = link.type === "p-s" ? 1 : Math.max(0, Math.min(1, (bElapsed - 0.5) / 0.6));
+            const bP = link.type === "t-t" || link.type === "s-t"
+              ? Math.max(0, Math.min(1, (bElapsed - 1.5) / 0.8))
+              : aP;
+            if (aP <= 0 || bP <= 0) return;
 
-            const mx = ax + (bx - ax) * linkProgress;
-            const my = a.baseY + (b.baseY - a.baseY) * linkProgress;
+            const [opacity, lineW] = linkStyle(link.type);
+            const mx = a.x + (b.x - a.x) * linkProgress;
+            const my = a.y + (b.y - a.y) * linkProgress;
 
             ctx.beginPath();
-            ctx.moveTo(ax, a.baseY);
+            ctx.moveTo(a.x, a.y);
             ctx.lineTo(mx, my);
 
-            if (link.color === "blue") {
-              ctx.strokeStyle = `rgba(26,58,255,${link.alpha * linkProgress})`;
+            // Color by type
+            if (link.type === "p-s") {
+              ctx.strokeStyle = `rgba(26,58,255,${opacity * linkProgress})`;
+            } else if (link.type === "s-t" || link.type === "s-s") {
+              ctx.strokeStyle = `rgba(196,168,79,${opacity * linkProgress})`;
             } else {
-              ctx.strokeStyle = `rgba(196,168,79,${link.alpha * linkProgress})`;
+              ctx.strokeStyle = `rgba(26,58,255,${opacity * linkProgress})`;
             }
-            ctx.lineWidth = link.lineWidth;
+            ctx.lineWidth = lineW;
             ctx.stroke();
-          }
+          });
         }
       }
 
+      // Phase C: zoom out
+      if (currentPhase === "C") {
+        const cElapsed = elapsed - 12;
+        // No CSS scale - just visual
+      }
+
       // Phase D: muted yellow pulse
-      if (phase === "D") {
+      if (currentPhase === "D") {
         const dElapsed = elapsed - 16;
         const pulseAlpha = Math.max(0, Math.sin(dElapsed * Math.PI * 2) * 0.8);
+        // Pulse ring
         const pulseR = 20 + dElapsed * 40;
         ctx.beginPath();
         ctx.arc(cx, cy, pulseR, 0, Math.PI * 2);
@@ -351,31 +346,27 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
         ctx.fill();
       }
 
-      // Update labels without causing re-render storm — throttle
-      if (Math.floor(elapsed * 10) % 3 === 0) {
-        setLabels(labelData);
+      if (currentPhase !== "done") {
+        rafId = requestAnimationFrame(draw);
       }
-
-      rafRef.current = requestAnimationFrame(draw);
     };
 
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
+    rafId = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
-  // Handle completion
   useEffect(() => {
-    if (fadeOut) {
-      const t = setTimeout(onComplete, 800);
+    if (phase === "done") {
+      const t = setTimeout(onComplete, 500);
       return () => clearTimeout(t);
     }
-  }, [fadeOut, onComplete]);
+  }, [phase, onComplete]);
 
   return (
     <motion.div
       className="fixed inset-0 z-10"
       initial={{ opacity: 0 }}
-      animate={{ opacity: fadeOut ? 0 : 1 }}
+      animate={{ opacity: phase === "done" ? 0 : 1 }}
       transition={{ duration: 0.8 }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
