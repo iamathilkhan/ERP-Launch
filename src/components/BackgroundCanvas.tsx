@@ -27,21 +27,20 @@ const BackgroundCanvas = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    // Init particles
     particlesRef.current = Array.from({ length: 25 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.3,
       vy: (Math.random() - 0.5) * 0.3,
-      opacity: 0.03 + Math.random() * 0.05,
+      opacity: 0.03 + Math.random() * 0.02,
       size: 1 + Math.random() * 2,
     }));
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Grid
-      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      // Grid - blue tinted
+      ctx.strokeStyle = "rgba(26,58,255,0.06)";
       ctx.lineWidth = 0.5;
       const gap = 60;
       for (let x = 0; x < canvas.width; x += gap) {
@@ -57,7 +56,7 @@ const BackgroundCanvas = () => {
         ctx.stroke();
       }
 
-      // Particles
+      // Particles - muted yellow
       for (const p of particlesRef.current) {
         p.x += p.vx;
         p.y += p.vy;
@@ -65,7 +64,7 @@ const BackgroundCanvas = () => {
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+        ctx.fillStyle = `rgba(196,168,79,${p.opacity})`;
         ctx.fill();
       }
 

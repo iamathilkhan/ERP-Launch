@@ -35,17 +35,23 @@
     --radius: 0.625rem;
 
     /* Eduvertex custom tokens */
-    --ev-bg: #0e0e0f;
-    --ev-gold: #d6b85a;
-    --ev-gold-rgb: 214 184 90;
-    --ev-matrix: #00ff41;
-    --ev-body: 0 0% 100% / 0.75;
-    --ev-muted: 0 0% 100% / 0.45;
-    --ev-dim: 0 0% 100% / 0.35;
-    --ev-card-bg: #1a1a1d;
-    --ev-gold-glow: 0 0 60px rgba(214,184,90,0.3);
-    --ev-gold-glow-sm: 0 0 20px rgba(214,184,90,0.4);
-    --ev-gold-border-glow: 0 0 16px rgba(214,184,90,0.2);
+    --ev-bg: #060810;
+    --ev-blue: #1a3aff;
+    --ev-blue-rgb: 26 58 255;
+    --ev-blue-glow: rgba(26,58,255,0.35);
+    --ev-blue-deep: #0d1a66;
+    --ev-crimson: #790c0c;
+    --ev-crimson-glow: rgba(121,12,12,0.4);
+    --ev-yellow: #c4a84f;
+    --ev-yellow-faded: rgba(196,168,79,0.4);
+    --ev-matrix: #1a3aff;
+    --ev-body: 230 60% 91% / 0.85;
+    --ev-muted: 230 50% 83% / 0.45;
+    --ev-dim: 230 50% 83% / 0.35;
+    --ev-card-bg: #0d1a66;
+    --ev-accent-glow: 0 0 60px rgba(121,12,12,0.5);
+    --ev-blue-glow-sm: 0 0 20px rgba(26,58,255,0.4);
+    --ev-blue-border-glow: 0 0 16px rgba(26,58,255,0.2);
 
     --sidebar-background: 240 4% 8%;
     --sidebar-foreground: 0 0% 95%;
@@ -86,11 +92,14 @@
   .text-ev-dim {
     color: hsl(var(--ev-dim));
   }
-  .text-ev-gold {
-    color: var(--ev-gold);
+  .text-ev-blue {
+    color: var(--ev-blue);
   }
-  .border-ev-gold {
-    border-color: var(--ev-gold);
+  .text-ev-yellow {
+    color: var(--ev-yellow);
+  }
+  .border-ev-blue {
+    border-color: var(--ev-blue);
   }
   .bg-ev-dark {
     background-color: var(--ev-bg);
@@ -98,13 +107,13 @@
   .bg-ev-card {
     background-color: var(--ev-card-bg);
   }
-  .shadow-ev-gold {
-    box-shadow: var(--ev-gold-glow);
+  .shadow-ev-blue {
+    box-shadow: var(--ev-accent-glow);
   }
-  .shadow-ev-gold-sm {
-    box-shadow: var(--ev-gold-glow-sm);
+  .shadow-ev-blue-sm {
+    box-shadow: var(--ev-blue-glow-sm);
   }
-  .shadow-ev-gold-border {
-    box-shadow: var(--ev-gold-border-glow);
+  .shadow-ev-blue-border {
+    box-shadow: var(--ev-blue-border-glow);
   }
 }

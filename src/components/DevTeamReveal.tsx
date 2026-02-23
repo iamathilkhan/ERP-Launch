@@ -51,7 +51,7 @@ const MODULES: Module[] = [
   },
 ];
 
-const MODULE_DURATION = 5700; // ms per module
+const MODULE_DURATION = 5700;
 
 const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
   const [showHeading, setShowHeading] = useState(false);
@@ -76,9 +76,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
     }
 
     setShowCards(false);
-    // Show cards after module name holds (400ms entrance + 800ms hold)
     const tCards = setTimeout(() => setShowCards(true), 1200);
-    // Advance to next module
     const tNext = setTimeout(() => setCurrentModule((p) => p + 1), MODULE_DURATION);
     return () => { clearTimeout(tCards); clearTimeout(tNext); };
   }, [currentModule, onComplete]);
@@ -99,12 +97,11 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
         />
       )}
 
-      {/* Static heading */}
       <AnimatePresence>
         {showHeading && (
           <motion.h2
             className="font-orbitron text-lg md:text-2xl tracking-[0.08em] mb-10"
-            style={{ color: "white", textShadow: "0 0 20px rgba(214,184,90,0.4)" }}
+            style={{ color: "rgba(210,220,255,0.95)", textShadow: "0 0 20px rgba(26,58,255,0.5)" }}
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -114,7 +111,6 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
         )}
       </AnimatePresence>
 
-      {/* Module reveal area */}
       <div className="relative flex flex-col items-center min-h-[280px] w-full max-w-2xl px-4">
         <AnimatePresence mode="wait">
           {currentModule >= 0 && currentModule < MODULES.length && (
@@ -126,12 +122,11 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6 }}
             >
-              {/* Module name */}
               <motion.h3
                 className="font-orbitron text-base md:text-xl tracking-[0.08em]"
                 style={{
-                  color: "rgba(214,184,90,1)",
-                  textShadow: "0 0 20px rgba(214,184,90,0.5)",
+                  color: "#c4a84f",
+                  textShadow: "0 0 20px rgba(196,168,79,0.4)",
                   fontSize: "clamp(1rem, 2vw, 1.4rem)",
                 }}
                 initial={{ opacity: 0, scale: 0.97 }}
@@ -141,16 +136,14 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                 {MODULES[currentModule].name}
               </motion.h3>
 
-              {/* Gold underline */}
               <motion.div
                 className="h-px mt-2 mb-6"
-                style={{ backgroundColor: "var(--ev-gold)" }}
+                style={{ backgroundColor: "#c4a84f" }}
                 initial={{ width: 0 }}
                 animate={{ width: 200 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
               />
 
-              {/* Member cards - appear together after delay */}
               {showCards && (
                 <div className="flex gap-4 md:gap-6 justify-center flex-wrap">
                   {MODULES[currentModule].members.map((member, i) => (
@@ -158,8 +151,9 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                       key={member.name}
                       className="flex flex-col items-center p-4 rounded-[14px]"
                       style={{
-                        background: "#1a1a1d",
-                        border: "1px solid rgba(214,184,90,0.2)",
+                        background: "#0d1a66",
+                        border: "1px solid rgba(26,58,255,0.25)",
+                        boxShadow: "0 0 16px rgba(26,58,255,0.2)",
                       }}
                       initial={{ opacity: 0, scale: 0.96, y: 8 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -167,7 +161,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                     >
                       <div
                         className="w-[72px] h-[72px] md:w-[90px] md:h-[90px] rounded-xl overflow-hidden mb-3"
-                        style={{ border: "1px solid rgba(214,184,90,0.25)" }}
+                        style={{ border: "1px solid rgba(26,58,255,0.3)" }}
                       >
                         <img
                           src={member.img}
@@ -176,12 +170,12 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                           loading="eager"
                         />
                       </div>
-                      <p className="font-orbitron text-white text-[0.85rem] tracking-[0.05em]">
+                      <p className="font-orbitron text-[0.85rem] tracking-[0.05em]" style={{ color: "rgba(210,220,255,0.95)" }}>
                         {member.name}
                       </p>
                       <p
                         className="font-space text-[0.75rem] tracking-[0.1em] mt-0.5"
-                        style={{ color: "rgba(255,255,255,0.5)" }}
+                        style={{ color: "rgba(180,195,255,0.5)" }}
                       >
                         {member.role}
                       </p>
