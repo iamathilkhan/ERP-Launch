@@ -29,9 +29,9 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
       const sphereR = 15 * sphereScale;
       
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sphereR * 4);
-      grad.addColorStop(0, "rgba(255,255,255,0.9)");
+      grad.addColorStop(0, "rgba(121,12,12,0.9)");
       grad.addColorStop(0.3, "rgba(214,184,90,0.4)");
-      grad.addColorStop(1, "rgba(214,184,90,0)");
+      grad.addColorStop(1, "rgba(121,12,12,0)");
       ctx.beginPath();
       ctx.arc(cx, cy, sphereR * 4, 0, Math.PI * 2);
       ctx.fillStyle = grad;
@@ -39,7 +39,7 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
 
       ctx.beginPath();
       ctx.arc(cx, cy, sphereR, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.fillStyle = "rgba(121,12,12,0.9)";
       ctx.fill();
 
       // White pulse at 0.6s
