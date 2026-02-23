@@ -34,7 +34,7 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       const glowProgress = Math.min(1, (elapsed - 0.5) / 1.5);
       const glowR = 20 + glowProgress * 100;
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-      grad.addColorStop(0, `rgba(255,255,255,${0.5 * glowProgress})`);
+      grad.addColorStop(0, `rgba(121,12,12,${0.5 * glowProgress})`);
       grad.addColorStop(0.5, `rgba(214,184,90,${0.15 * glowProgress})`);
       grad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
@@ -56,7 +56,7 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
 
           ctx.beginPath();
           ctx.arc(nx, ny, 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${ghostAlpha})`;
+          ctx.fillStyle = `rgba(121,12,12,${ghostAlpha})`;
           ctx.fill();
 
           ctx.beginPath();
