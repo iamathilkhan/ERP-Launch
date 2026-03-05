@@ -71,14 +71,14 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
                 return next;
               });
               setCurrentChar(currentChar + 1);
-            }, 45);
-          }, 200);
-        }, 200);
+            }, 25);
+          }, 100);
+        }, 100);
         return;
       }
 
       const isSpace = line[currentChar - 1] === " ";
-      const delay = isSpace ? 120 + Math.random() * 80 : 35 + Math.random() * 20;
+      const delay = isSpace ? 50 + Math.random() * 40 : 15 + Math.random() * 15;
 
       timeoutRef.current = setTimeout(() => {
         setDisplayLines((prev) => {
@@ -98,8 +98,8 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
           setCurrentChar(0);
           typoStateRef.current = "none";
           setDisplayLines((prev) => [...prev, ""]);
-        }, 400);
-      }, 300);
+        }, 200);
+      }, 150);
     }
 
     return () => clearTimeout(timeoutRef.current);
@@ -111,7 +111,7 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
 
   useEffect(() => {
     if (exiting) {
-      const t = setTimeout(onComplete, 600);
+      const t = setTimeout(onComplete, 300);
       return () => clearTimeout(t);
     }
   }, [exiting, onComplete]);

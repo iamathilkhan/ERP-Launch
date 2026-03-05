@@ -24,13 +24,13 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       const elapsed = (now - start) / 1000;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (elapsed < 0.5) {
+      if (elapsed < 0.2) {
         requestAnimationFrame(draw);
         return;
       }
 
       // Central crimson glow
-      const glowProgress = Math.min(1, (elapsed - 0.5) / 1.5);
+      const glowProgress = Math.min(1, (elapsed - 0.2) / 0.8);
       const glowR = 20 + glowProgress * 100;
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
       grad.addColorStop(0, `rgba(155,26,26,${0.5 * glowProgress})`);
@@ -42,10 +42,10 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       ctx.fill();
 
       // Ghost network sphere
-      if (elapsed > 1 && elapsed < 3) {
-        const ghostAlpha = elapsed < 2
-          ? Math.min(0.15, (elapsed - 1) * 0.15)
-          : Math.max(0, 0.15 - (elapsed - 2) * 0.15);
+      if (elapsed > 0.5 && elapsed < 1.5) {
+        const ghostAlpha = elapsed < 1
+          ? Math.min(0.15, (elapsed - 0.5) * 0.3)
+          : Math.max(0, 0.15 - (elapsed - 1) * 0.3);
         const radius = Math.min(cx, cy) * 0.2;
 
         for (let i = 0; i < 5; i++) {
@@ -68,8 +68,8 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       }
 
       // Blue pulse ring
-      if (elapsed > 2) {
-        const p1 = (elapsed - 2) / 1.5;
+      if (elapsed > 1) {
+        const p1 = (elapsed - 1) / 1.0;
         if (p1 < 1) {
           const r = p1 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
@@ -80,8 +80,8 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
         }
       }
       // Muted yellow pulse ring
-      if (elapsed > 2.6) {
-        const p2 = (elapsed - 2.6) / 1.5;
+      if (elapsed > 1.3) {
+        const p2 = (elapsed - 1.3) / 1.0;
         if (p2 < 1) {
           const r = p2 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
@@ -92,13 +92,13 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
         }
       }
 
-      if (elapsed < 5) {
+      if (elapsed < 3) {
         requestAnimationFrame(draw);
       }
     };
 
     requestAnimationFrame(draw);
-    const t = setTimeout(onComplete, 4500);
+    const t = setTimeout(onComplete, 2200);
     return () => clearTimeout(t);
   }, [onComplete]);
 

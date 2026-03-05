@@ -37,7 +37,7 @@ const Index = () => {
     if (step === "network") {
       const guard = setTimeout(() => {
         // No-op safety guard — NetworkFormation's internal timer is the true trigger.
-      }, 20000);
+      }, 12000);
       return () => clearTimeout(guard);
     }
   }, [step]);

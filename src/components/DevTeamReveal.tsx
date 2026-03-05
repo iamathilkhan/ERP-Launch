@@ -60,12 +60,12 @@ const MODULES: Module[] = [
 ];
 
 // Per-module timing (ms)
-// Phase 1 – name + rule:       1300
-// Phase 2 – member cards:      2800  (enter 400ms + hold 2400ms)
-// Phase 3 – fade out + gap:    1000
-// Total per module:            5100
-const MODULE_DURATION = 5100;
-const MEMBERS_SHOW_DELAY = 1300;
+// Phase 1 – name + rule:       600
+// Phase 2 – member cards:      1800
+// Phase 3 – fade out + gap:    400
+// Total per module:            2800
+const MODULE_DURATION = 2800;
+const MEMBERS_SHOW_DELAY = 600;
 
 const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
   const [showHeading, setShowHeading] = useState(false);
@@ -74,8 +74,8 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setShowHeading(true), 300);
-    const t2 = setTimeout(() => setCurrentModule(0), 1800);
+    const t1 = setTimeout(() => setShowHeading(true), 150);
+    const t2 = setTimeout(() => setCurrentModule(0), 400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
@@ -85,8 +85,8 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
     if (currentModule >= MODULES.length) {
       const t = setTimeout(() => {
         setExiting(true);
-        setTimeout(onComplete, 800);
-      }, 600);
+        setTimeout(onComplete, 500);
+      }, 300);
       return () => clearTimeout(t);
     }
 

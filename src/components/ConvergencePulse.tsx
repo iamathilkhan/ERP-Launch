@@ -53,9 +53,9 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
       const elapsed = (now - start) / 1000;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Phase A: Shrink (0-1.5s)
-      if (elapsed < 1.5) {
-        const t = elapsed / 1.5;
+      // Phase A: Shrink (0-0.7s)
+      if (elapsed < 0.7) {
+        const t = Math.min(1, elapsed / 0.7);
         const ease = t * t * t;
 
         particles.forEach((p) => {
@@ -78,9 +78,9 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
         ctx.fill();
       }
 
-      // Phase B: Tension hold (1.5s - 1.8s)
-      if (elapsed >= 1.5 && elapsed < 1.8) {
-        const pulseT = (elapsed - 1.5) / 0.08;
+      // Phase B: Tension hold (0.7s - 0.9s)
+      if (elapsed >= 0.7 && elapsed < 0.9) {
+        const pulseT = (elapsed - 0.7) / 0.08;
         const pulseScale = 1 + 0.4 * Math.abs(Math.sin(pulseT * Math.PI));
         const dotR = 4 * pulseScale;
         ctx.beginPath();
@@ -89,9 +89,9 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
         ctx.fill();
       }
 
-      // Phase C: Blast (1.8s - 2.3s)
-      if (elapsed >= 1.8 && elapsed < 2.3) {
-        const blastT = (elapsed - 1.8) / 0.5;
+      // Phase C: Blast (0.9s - 1.4s)
+      if (elapsed >= 0.9 && elapsed < 1.4) {
+        const blastT = (elapsed - 0.9) / 0.5;
 
         // Blast particle lines — crimson fading to transparent
         const blastAlpha = Math.max(0, 1 - blastT * 2);
@@ -126,13 +126,13 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
         }
       }
 
-      if (elapsed < 4) {
+      if (elapsed < 2) {
         rafId = requestAnimationFrame(draw);
       }
     };
 
     rafId = requestAnimationFrame(draw);
-    const t = setTimeout(onComplete, 2500);
+    const t = setTimeout(onComplete, 1600);
     return () => { cancelAnimationFrame(rafId); clearTimeout(t); };
   }, [onComplete]);
 

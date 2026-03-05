@@ -36,7 +36,7 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
     const columns: Column[] = Array.from({ length: colCount }, (_, i) => ({
       x: i * fontSize,
       y: Math.random() * -canvas.height,
-      speed: 2 + Math.random() * 2,
+      speed: 4 + Math.random() * 4,
       chars: Array.from({ length: trailLen }, () => CHARS[Math.floor(Math.random() * CHARS.length)]),
       alpha: 0.4 + Math.random() * 0.6,
     }));
@@ -47,14 +47,14 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
     const draw = (now: number) => {
       const elapsed = (now - startRef.current) / 1000;
 
-      if (elapsed > 1 && elapsed < 4) setOverlayPhase("sync");
-      if (elapsed > 2 && elapsed < 4) setOverlayPhase("map");
-      if (elapsed > 4 && elapsed < 5) setOverlayPhase("fadeout");
-      if (elapsed > 5) setOverlayPhase("none");
+      if (elapsed > 0.5 && elapsed < 2) setOverlayPhase("sync");
+      if (elapsed > 1.5 && elapsed < 3.5) setOverlayPhase("map");
+      if (elapsed > 3.5 && elapsed < 4) setOverlayPhase("fadeout");
+      if (elapsed > 4) setOverlayPhase("none");
 
-      // Gentle fade-out in last 3s — purely alpha, no transform
-      if (elapsed > 7) {
-        const fadeProgress = Math.min(1, (elapsed - 7) / 3);
+      // Gentle fade-out in last 2s — purely alpha, no transform
+      if (elapsed > 4.5) {
+        const fadeProgress = Math.min(1, (elapsed - 4.5) / 1.5);
         matrixAlpha = Math.max(0, 1 - fadeProgress * 0.8);
       }
 
@@ -95,8 +95,8 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
       });
 
       // Central glow in phase C - crimson tinted
-      if (elapsed > 8) {
-        const glowProgress = Math.min(1, (elapsed - 8) / 2);
+      if (elapsed > 4.8) {
+        const glowProgress = Math.min(1, (elapsed - 4.8) / 1.2);
         const glowR = 60 + glowProgress * 140;
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
         grad.addColorStop(0, `rgba(155,26,26,${glowProgress * 0.4})`);
@@ -110,13 +110,13 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
 
       ctx.restore();
 
-      if (elapsed < 10) {
+      if (elapsed < 6) {
         requestAnimationFrame(draw);
       }
     };
 
     requestAnimationFrame(draw);
-    const t = setTimeout(onComplete, 10000);
+    const t = setTimeout(onComplete, 6000);
     return () => clearTimeout(t);
   }, [onComplete]);
 
