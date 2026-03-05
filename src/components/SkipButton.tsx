@@ -13,7 +13,7 @@ const SkipButton = ({ visible, onSkip }: SkipButtonProps) => {
       onClick={onSkip}
       className="fixed top-6 right-6 z-50 font-space text-xs md:text-sm cursor-pointer"
       style={{
-        color: "rgba(180,195,255,0.5)",
+        color: "rgba(180,205,215,0.45)",
         background: "none",
         border: "none",
         letterSpacing: "0.05em",

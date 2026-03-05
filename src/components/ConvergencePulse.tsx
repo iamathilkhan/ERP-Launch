@@ -5,7 +5,8 @@ interface ConvergencePulseProps {
   onComplete: () => void;
 }
 
-const CRIMSON = { r: 121, g: 12, b: 12 };
+// New palette
+const CRIMSON = { r: 155, g: 26, b: 26 };
 
 const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,18 +23,20 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
     const cy = canvas.height / 2;
     const sphereRadius = Math.min(canvas.width, canvas.height) * 0.32;
 
-    // Generate scattered particles to simulate the sphere's nodes shrinking in
+    // Generate scattered particles — teal (front) / amber (back) depth-based
     const particles: { baseX: number; baseY: number; x: number; y: number; r: number; color: string }[] = [];
     for (let i = 0; i < 200; i++) {
       const angle = Math.random() * Math.PI * 2;
       const dist = sphereRadius * Math.sqrt(Math.random());
       const x = cx + Math.cos(angle) * dist;
       const y = cy + Math.sin(angle) * dist;
-      const isBlue = Math.random() > 0.4;
+      // depth from center: front = teal, back = amber
+      const depthFactor = dist / sphereRadius;
+      const isTeal = depthFactor < 0.6;
       particles.push({
         baseX: x, baseY: y, x, y,
         r: 1 + Math.random() * 3,
-        color: isBlue ? "rgba(26,58,255,0.5)" : "rgba(196,168,79,0.5)",
+        color: isTeal ? "rgba(0,200,212,0.5)" : "rgba(224,154,42,0.5)",
       });
     }
 
@@ -53,13 +56,12 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
       // Phase A: Shrink (0-1.5s)
       if (elapsed < 1.5) {
         const t = elapsed / 1.5;
-        const ease = t * t * t; // exponential easing
+        const ease = t * t * t;
 
         particles.forEach((p) => {
           p.x = p.baseX + (cx - p.baseX) * ease;
           p.y = p.baseY + (cy - p.baseY) * ease;
           const currentR = p.r * (1 - ease);
-
           if (currentR > 0.1) {
             ctx.beginPath();
             ctx.arc(p.x, p.y, currentR, 0, Math.PI * 2);
@@ -68,7 +70,7 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
           }
         });
 
-        // Central crimson dot shrinks
+        // Central crimson dot
         const coreR = 12 * (1 - ease * 0.6);
         ctx.beginPath();
         ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
@@ -91,7 +93,7 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
       if (elapsed >= 1.8 && elapsed < 2.3) {
         const blastT = (elapsed - 1.8) / 0.5;
 
-        // Blast particle lines
+        // Blast particle lines — crimson fading to transparent
         const blastAlpha = Math.max(0, 1 - blastT * 2);
         blastLines.forEach((bl) => {
           const endX = cx + Math.cos(bl.angle) * bl.len * blastT;
@@ -104,21 +106,21 @@ const ConvergencePulse = ({ onComplete }: ConvergencePulseProps) => {
           ctx.stroke();
         });
 
-        // Blue ring
+        // First ring — teal
         const ringR = blastT * Math.max(canvas.width, canvas.height) * 0.3;
         ctx.beginPath();
         ctx.arc(cx, cy, ringR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(26,58,255,${(1 - blastT) * 0.6})`;
+        ctx.strokeStyle = `rgba(0,200,212,${(1 - blastT) * 0.65})`;
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Yellow ring (delayed)
+        // Second ring — amber (delayed)
         if (blastT > 0.3) {
           const ringT = (blastT - 0.3) / 0.7;
           const ringR2 = ringT * Math.max(canvas.width, canvas.height) * 0.25;
           ctx.beginPath();
           ctx.arc(cx, cy, ringR2, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(196,168,79,${(1 - ringT) * 0.5})`;
+          ctx.strokeStyle = `rgba(224,154,42,${(1 - ringT) * 0.5})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }

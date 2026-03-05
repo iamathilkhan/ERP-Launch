@@ -116,6 +116,16 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
     }
   }, [exiting, onComplete]);
 
+  // Compute per-line progress: ratio of chars typed vs line length
+  const lineProgress = (i: number): number => {
+    if (lineComplete[i]) return 1;
+    if (i > currentLine) return 0;
+    if (i < currentLine) return 1;
+    // active line
+    const lineLen = LINES[i]?.length ?? 1;
+    return Math.min(1, currentChar / lineLen);
+  };
+
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center z-10"
@@ -129,20 +139,12 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
           const isComplete = lineComplete[i];
           const isFinal = i === LINES.length - 1 && isComplete;
           const isFlickering = flickering === i;
+          const progress = lineProgress(i);
 
           return (
             <motion.div
               key={i}
-              className="font-orbitron tracking-[0.08em] mb-2"
-              style={{
-                fontSize: "clamp(0.75rem, 1.5vw, 1rem)",
-                color: isFinal
-                  ? "rgba(210,220,255,0.85)"
-                  : isActive
-                  ? "rgba(210,220,255,0.85)"
-                  : "rgba(180,195,255,0.35)",
-                opacity: isFlickering ? 0.4 : 1,
-              }}
+              className="mb-3"
               initial={{ opacity: 0 }}
               animate={{
                 opacity: exiting ? 0 : isFlickering ? 0.4 : 1,
@@ -154,16 +156,63 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
                 },
               }}
             >
-              {text}
-              {isActive && !isComplete && (
-                <span
+              {/* Line text */}
+              <div
+                className="font-orbitron tracking-[0.08em] mb-1.5"
+                style={{
+                  fontSize: "clamp(0.65rem, 3.5vw, 1rem)",
+                  color: isFinal
+                    ? "rgba(220,235,240,0.9)"
+                    : isActive
+                      ? "rgba(220,235,240,0.9)"
+                      : "rgba(180,205,215,0.35)",
+                  opacity: isFlickering ? 0.4 : 1,
+                }}
+              >
+                {text}
+                {isActive && !isComplete && (
+                  <span
+                    style={{
+                      opacity: showCursor ? 1 : 0,
+                      color: "#00c8d4",
+                    }}
+                  >
+                    |
+                  </span>
+                )}
+              </div>
+
+              {/* Progress bar — only shown if line has appeared */}
+              {text.length > 0 && (
+                <div
                   style={{
-                    opacity: showCursor ? 1 : 0,
-                    color: "#1a3aff",
+                    position: "relative",
+                    height: "2px",
+                    width: "100%",
+                    background: "rgba(0,200,212,0.10)",
+                    borderRadius: "1px",
+                    overflow: "hidden",
                   }}
                 >
-                  |
-                </span>
+                  <motion.div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      height: "100%",
+                      borderRadius: "1px",
+                      background: isComplete
+                        ? "rgba(0,200,212,0.75)"
+                        : "rgba(0,200,212,0.55)",
+                      boxShadow: isComplete
+                        ? "0 0 6px rgba(0,200,212,0.6)"
+                        : "0 0 4px rgba(0,200,212,0.35)",
+                    }}
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${Math.round(progress * 100)}%` }}
+                    transition={{ duration: 0.12, ease: "linear" }}
+                  />
+                </div>
               )}
             </motion.div>
           );

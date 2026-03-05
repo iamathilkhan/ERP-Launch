@@ -12,7 +12,6 @@ interface Column {
   y: number;
   speed: number;
   chars: string[];
-  drift: number;
   alpha: number;
 }
 
@@ -39,12 +38,10 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
       y: Math.random() * -canvas.height,
       speed: 2 + Math.random() * 2,
       chars: Array.from({ length: trailLen }, () => CHARS[Math.floor(Math.random() * CHARS.length)]),
-      drift: 0,
       alpha: 0.4 + Math.random() * 0.6,
     }));
 
     startRef.current = performance.now();
-    let globalScale = 1;
     let matrixAlpha = 1;
 
     const draw = (now: number) => {
@@ -55,19 +52,10 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
       if (elapsed > 4 && elapsed < 5) setOverlayPhase("fadeout");
       if (elapsed > 5) setOverlayPhase("none");
 
-      if (elapsed > 4 && elapsed < 7) {
-        globalScale = 1 + ((elapsed - 4) / 3) * 0.06;
-        columns.forEach((col, i) => {
-          col.drift = Math.sin(i * 0.3) * 0.5;
-        });
-      }
-
+      // Gentle fade-out in last 3s — purely alpha, no transform
       if (elapsed > 7) {
-        const tunnelProgress = Math.min(1, (elapsed - 7) / 3);
-        matrixAlpha = Math.max(0, 1 - tunnelProgress * 0.8);
-        columns.forEach((col) => {
-          col.speed *= 1.001;
-        });
+        const fadeProgress = Math.min(1, (elapsed - 7) / 3);
+        matrixAlpha = Math.max(0, 1 - fadeProgress * 0.8);
       }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -75,13 +63,10 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
 
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
-      ctx.translate(cx, cy);
-      ctx.scale(globalScale, globalScale);
-      ctx.translate(-cx, -cy);
 
       columns.forEach((col) => {
+        // Strictly 2D: only vertical movement, no drift, no scale
         col.y += col.speed;
-        col.x += col.drift;
         if (col.y > canvas.height + trailLen * fontSize) {
           col.y = -trailLen * fontSize;
           col.chars = col.chars.map(() => CHARS[Math.floor(Math.random() * CHARS.length)]);
@@ -98,19 +83,11 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
 
           const trailAlpha = (1 - j / trailLen) * col.alpha * matrixAlpha;
 
-          let finalAlpha = trailAlpha;
-          if (elapsed > 7) {
-            const dx = col.x - cx;
-            const dy = charY - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 80) finalAlpha *= dist / 80;
-          }
-
           if (j === 0) {
-            // Lead char slightly brighter
-            ctx.fillStyle = `rgba(100,130,255,${finalAlpha * 0.65})`;
+            // Lead char — brighter teal
+            ctx.fillStyle = `rgba(0,220,230,${trailAlpha * 0.65})`;
           } else {
-            ctx.fillStyle = `rgba(26,58,255,${finalAlpha * 0.65})`;
+            ctx.fillStyle = `rgba(0,200,212,${trailAlpha * 0.65})`;
           }
           ctx.font = `${fontSize}px monospace`;
           ctx.fillText(char, col.x, charY);
@@ -122,8 +99,8 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
         const glowProgress = Math.min(1, (elapsed - 8) / 2);
         const glowR = 60 + glowProgress * 140;
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-        grad.addColorStop(0, `rgba(121,12,12,${glowProgress * 0.4})`);
-        grad.addColorStop(0.5, `rgba(26,58,255,${glowProgress * 0.15})`);
+        grad.addColorStop(0, `rgba(155,26,26,${glowProgress * 0.4})`);
+        grad.addColorStop(0.5, `rgba(0,200,212,${glowProgress * 0.12})`);
         grad.addColorStop(1, "rgba(0,0,0,0)");
         ctx.beginPath();
         ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
@@ -155,7 +132,7 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <motion.p
           className="font-space tracking-[0.2em] text-sm md:text-base"
-          style={{ color: "rgba(210,220,255,0.35)" }}
+          style={{ color: "rgba(220,235,240,0.35)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: overlayPhase === "sync" || overlayPhase === "map" ? 1 : 0 }}
           transition={{ duration: 0.8 }}
@@ -164,7 +141,7 @@ const MatrixSequence = ({ onComplete }: MatrixSequenceProps) => {
         </motion.p>
         <motion.p
           className="font-space tracking-[0.2em] text-xs md:text-sm mt-3"
-          style={{ color: "rgba(196,168,79,0.3)" }}
+          style={{ color: "rgba(224,154,42,0.3)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: overlayPhase === "map" ? 1 : 0 }}
           transition={{ duration: 0.8 }}

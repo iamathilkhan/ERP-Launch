@@ -33,8 +33,8 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       const glowProgress = Math.min(1, (elapsed - 0.5) / 1.5);
       const glowR = 20 + glowProgress * 100;
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-      grad.addColorStop(0, `rgba(121,12,12,${0.5 * glowProgress})`);
-      grad.addColorStop(0.5, `rgba(26,58,255,${0.1 * glowProgress})`);
+      grad.addColorStop(0, `rgba(155,26,26,${0.5 * glowProgress})`);
+      grad.addColorStop(0.5, `rgba(0,200,212,${0.1 * glowProgress})`);
       grad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
       ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
@@ -55,13 +55,13 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
 
           ctx.beginPath();
           ctx.arc(nx, ny, 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(121,12,12,${ghostAlpha})`;
+          ctx.fillStyle = `rgba(155,26,26,${ghostAlpha})`;
           ctx.fill();
 
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.lineTo(nx, ny);
-          ctx.strokeStyle = `rgba(26,58,255,${ghostAlpha * 0.5})`;
+          ctx.strokeStyle = `rgba(0,200,212,${ghostAlpha * 0.5})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -74,7 +74,7 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
           const r = p1 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(26,58,255,${(1 - p1) * 0.6})`;
+          ctx.strokeStyle = `rgba(0,200,212,${(1 - p1) * 0.55})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -86,7 +86,7 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
           const r = p2 * Math.max(canvas.width, canvas.height) * 0.5;
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(196,168,79,${(1 - p2) * 0.5})`;
+          ctx.strokeStyle = `rgba(224,154,42,${(1 - p2) * 0.45})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
