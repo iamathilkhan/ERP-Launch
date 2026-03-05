@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-// Import video from assets
-import bgVideo from "@/assets/background.webm";
+// Video served from /public — plain URL avoids Git LFS Vercel issue
+const BG_VIDEO_URL = "/background.webm";
 
 interface BackgroundCanvasProps {
   step: "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
@@ -126,7 +126,7 @@ const BackgroundCanvas = ({ step }: BackgroundCanvasProps) => {
         className="absolute inset-0 w-full h-full origin-center transition-transform duration-300 ease-out"
       >
         <video
-          src={bgVideo}
+          src={BG_VIDEO_URL}
           autoPlay
           loop
           muted

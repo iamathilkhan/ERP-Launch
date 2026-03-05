@@ -1,0 +1,18 @@
+{
+    "buildCommand": "git lfs fetch --all && git lfs checkout && npm run build",
+    "headers": [
+        {
+            "source": "/(.*)\\.webm",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "video/webm"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
+        }
+    ]
+}
