@@ -10,6 +10,7 @@ import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
 import SkipButton from "@/components/SkipButton";
 import campusnexusLogo from "@/assets/campusnexus.png";
+import batmanLogo from "@/assets/batman logo.png";
 import { motion } from "framer-motion";
 
 // Import all images for preloading
@@ -164,6 +165,28 @@ const Index = () => {
       {step === "devteam" && <DevTeamReveal onComplete={advance("finalconv")} />}
       {step === "finalconv" && <FinalConvergence onComplete={advance("hero")} />}
       {step === "hero" && <FinalHero />}
+
+      {step !== "init" && (
+        <motion.div 
+          className="fixed top-0 left-0 right-0 z-50 pointer-events-none px-6 py-6 flex justify-between items-start"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <img 
+            src={campusnexusLogo} 
+            alt="Campus Nexus" 
+            className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
+            style={{ filter: "drop-shadow(0 0 10px rgba(0,200,212,0.3))" }}
+          />
+          <img 
+            src={batmanLogo} 
+            alt="Nexus Ops" 
+            className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
+            style={{ filter: "drop-shadow(0 0 10px rgba(155,26,26,0.3))" }}
+          />
+        </motion.div>
+      )}
 
       <SkipButton visible={showSkip && step !== "hero"} onSkip={handleSkip} />
     </div>
