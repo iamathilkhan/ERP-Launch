@@ -23,7 +23,7 @@ import ravintharImg from "@/assets/development_team/38 Ravinthar.JPG";
 import sachithImg from "@/assets/development_team/41 Sachithananthan.JPG";
 
 // Staff Images
-import vigneshImg from "@/assets/staff_team/Mr. L.S. Vignesh.JPG";
+import vigneshImg from "@/assets/staff_team/Mr. L.S. Vignesh.jpg";
 import prathapImg from "@/assets/staff_team/Mr. C. Prathap.JPG";
 import archanaImg from "@/assets/staff_team/Mrs. R. Archana.JPG";
 import udhayaImg from "@/assets/staff_team/Mr. R. UdhayaKumar.JPG";
@@ -38,8 +38,8 @@ import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.JPG";
 import vicePrincipalImg from "@/assets/spl_thanks/Sathya.jpg";
 import secretaryImg from "@/assets/spl_thanks/Somasundharam.JPG";
 import jointSecretaryImg from "@/assets/spl_thanks/Joint.JPG";
-import vimalrajImg from "@/assets/spl_thanks/Vimalraj Kanagaraj.JPG";
-import rengarajanImg from "@/assets/spl_thanks/Rengarajan Thiruvengadam.JPG";
+import vimalrajImg from "@/assets/spl_thanks/Vimalraj Kanagaraj.jpg";
+import rengarajanImg from "@/assets/spl_thanks/Rengarajan Thiruvengadam.jpg";
 
 interface DevTeamRevealProps {
   onComplete: () => void;
