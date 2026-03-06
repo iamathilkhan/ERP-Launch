@@ -111,6 +111,22 @@ const FinalConvergence = ({ onComplete }: FinalConvergenceProps) => {
       transition={{ duration: 0.8 }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center p-8 pointer-events-none"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.5 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+      >
+        <img 
+          src="/src/assets/campusnexus.png" 
+          alt="Campus Nexus" 
+          className="w-48 h-48 md:w-64 md:h-64 object-contain"
+          style={{
+            filter: "drop-shadow(0 0 40px rgba(155,26,26,0.6))"
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 };

@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import BlackholeTransition from "./BlackholeTransition";
+import campusnexusLogo from "@/assets/campusnexus.png";
 
 const ERP_PAGE = "http://localhost:8086/login";
 
@@ -27,6 +28,17 @@ const FinalHero = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
+        <motion.img
+          src={campusnexusLogo}
+          alt="Campus Nexus Logo"
+          className="w-24 h-24 md:w-32 md:h-32 mb-6 object-contain"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{
+            filter: "drop-shadow(0 0 30px rgba(155,26,26,0.5)) drop-shadow(0 0 15px rgba(0,200,212,0.3))"
+          }}
+        />
         <motion.h1
           className="font-orbitron font-bold tracking-[0.08em]"
           style={{

@@ -9,43 +9,44 @@ import DevTeamReveal from "@/components/DevTeamReveal";
 import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
 import SkipButton from "@/components/SkipButton";
+import campusnexusLogo from "@/assets/campusnexus.png";
 import { motion } from "framer-motion";
 
 // Import all images for preloading
-import thanushImg from "@/assets/development_team/Thanush Kumar.JPG";
-import logeshImg from "@/assets/development_team/Logesh Kumar.JPG";
+import thanushImg from "@/assets/development_team/Thanush Kumar.jpg";
+import logeshImg from "@/assets/development_team/Logesh Kumar.jpg";
 import kaviyaImg from "@/assets/development_team/Kaviya.jpg";
-import srihariImg from "@/assets/development_team/Sri Hari Prasath.JPG";
-import rishikeshImg from "@/assets/development_team/Rishi Kesh.JPG";
-import preethiImg from "@/assets/development_team/Preethi.JPG";
-import naveenImg from "@/assets/development_team/Naveen Bharathi.JPG";
-import pandeeswaranImg from "@/assets/development_team/Pandeeswaran.JPG";
-import akshayaImg from "@/assets/development_team/Akahaya Shri.JPG";
-import athilImg from "@/assets/development_team/Ahamed Athil Khan.JPG";
-import keerthanaImg from "@/assets/development_team/Keerthana.JPG";
-import aashwinImg from "@/assets/development_team/Aashwin.JPG";
-import sakthiImg from "@/assets/development_team/Sakthi Sundar.JPG";
-import deebaImg from "@/assets/development_team/Deeba Dharshini.JPG";
-import kanagaImg from "@/assets/development_team/Kanaga Duraga.JPG";
-import pranavImg from "@/assets/development_team/15 Pranav.JPG";
-import joshikaImg from "@/assets/development_team/33 Palasai Joshika.JPG";
-import ravintharImg from "@/assets/development_team/38 Ravinthar.JPG";
-import sachithImg from "@/assets/development_team/41 Sachithananthan.JPG";
+import srihariImg from "@/assets/development_team/Sri Hari Prasath.jpg";
+import rishikeshImg from "@/assets/development_team/Rishi Kesh.jpg";
+import preethiImg from "@/assets/development_team/Preethi.jpg";
+import naveenImg from "@/assets/development_team/Naveen Bharathi.jpg";
+import pandeeswaranImg from "@/assets/development_team/Pandeeswaran.jpg";
+import akshayaImg from "@/assets/development_team/Akahaya Shri.jpg";
+import athilImg from "@/assets/development_team/Ahamed Athil Khan.jpg";
+import keerthanaImg from "@/assets/development_team/Keerthana.jpg";
+import aashwinImg from "@/assets/development_team/Aashwin.jpg";
+import sakthiImg from "@/assets/development_team/Sakthi Sundar.jpg";
+import deebaImg from "@/assets/development_team/Deeba Dharshini.jpg";
+import kanagaImg from "@/assets/development_team/Kanaga Duraga.jpg";
+import pranavImg from "@/assets/development_team/15 Pranav.jpg";
+import joshikaImg from "@/assets/development_team/33 Palasai Joshika.jpg";
+import ravintharImg from "@/assets/development_team/38 Ravinthar.jpg";
+import sachithImg from "@/assets/development_team/41 Sachithananthan.jpg";
 
-import staff1 from "@/assets/staff_team/Mr. L.S. Vignesh.JPG";
-import staff2 from "@/assets/staff_team/Mr. C. Prathap.JPG";
-import staff3 from "@/assets/staff_team/Mrs. R. Archana.JPG";
-import staff4 from "@/assets/staff_team/Mr. R. UdhayaKumar.JPG";
-import staff5 from "@/assets/staff_team/Ms. Abirami Kayathri.JPG";
-import staff6 from "@/assets/staff_team/Mrs. R. Pavithra.JPG";
-import staff7 from "@/assets/staff_team/Mrs. S. Sai Suganya.JPG";
-import staff8 from "@/assets/staff_team/Mr. K. Velkumar.JPG";
-import staff9 from "@/assets/staff_team/Mrs. M. Bhavani.JPG";
+import staff1 from "@/assets/staff_team/Mr. L.S. Vignesh.jpg";
+import staff2 from "@/assets/staff_team/Mr. C. Prathap.jpg";
+import staff3 from "@/assets/staff_team/Mrs. R. Archana.jpg";
+import staff4 from "@/assets/staff_team/Mr. R. UdhayaKumar.jpg";
+import staff5 from "@/assets/staff_team/Ms. Abirami Kayathri.jpg";
+import staff6 from "@/assets/staff_team/Mrs. R. Pavithra.jpg";
+import staff7 from "@/assets/staff_team/Mrs. S. Sai Suganya.jpg";
+import staff8 from "@/assets/staff_team/Mr. K. Velkumar.jpg";
+import staff9 from "@/assets/staff_team/Mrs. M. Bhavani.jpg";
 
-import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.JPG";
+import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.jpg";
 import vicePrincipalImg from "@/assets/spl_thanks/Sathya.jpg";
-import secretaryImg from "@/assets/spl_thanks/Somasundharam.JPG";
-import jointSecretaryImg from "@/assets/spl_thanks/Joint.JPG";
+import secretaryImg from "@/assets/spl_thanks/Somasundharam.jpg";
+import jointSecretaryImg from "@/assets/spl_thanks/Joint.jpg";
 
 const ASSETS_TO_PRELOAD = [
   thanushImg, logeshImg, kaviyaImg, srihariImg, rishikeshImg, preethiImg, naveenImg,
@@ -107,11 +108,27 @@ const Index = () => {
 
       {step === "init" && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          <motion.img
+            src={campusnexusLogo}
+            alt="Campus Nexus Logo"
+            className="w-32 h-32 md:w-48 md:h-48 mb-8 object-contain"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ 
+              duration: 1.2,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut"
+            }}
+            style={{
+              filter: "drop-shadow(0 0 20px rgba(0,200,212,0.4))"
+            }}
+          />
           <motion.button
             onClick={startSequence}
             className="font-space px-8 py-3 rounded-md text-sm md:text-base tracking-[0.2em] uppercase cursor-pointer"
