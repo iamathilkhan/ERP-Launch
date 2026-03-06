@@ -20,41 +20,35 @@ const MODULES: Module[] = [
   {
     name: "Faculty Module",
     members: [
-      { name: "Sneha Iyer", role: "Frontend Dev", img: "https://i.pravatar.cc/90?img=2" },
-      { name: "Ravi Shankar", role: "Backend Dev", img: "https://i.pravatar.cc/90?img=3" },
-      { name: "Divya Pillai", role: "QA Engineer", img: "https://i.pravatar.cc/90?img=4" },
+      { name: "Thanush Kumar", role: "Developer", img: "https://i.pravatar.cc/90?img=2" },
+      { name: "Logesh Kumar", role: "Developer", img: "https://i.pravatar.cc/90?img=3" },
+      { name: "Kaviya", role: "Developer", img: "https://i.pravatar.cc/90?img=4" },
+      { name: "Sri Hari Prasath", role: "Developer", img: "https://i.pravatar.cc/90?img=8" },
     ],
   },
   {
     name: "Student Module",
     members: [
-      { name: "Jordan Kim", role: "Frontend Dev", img: "https://i.pravatar.cc/90?img=6" },
-      { name: "Mei Chen", role: "Backend Dev", img: "https://i.pravatar.cc/90?img=7" },
-      { name: "Karan Verma", role: "QA Engineer", img: "https://i.pravatar.cc/90?img=8" },
+      { name: "Rishi Kesh", role: "Developer", img: "https://i.pravatar.cc/90?img=11" },
+      { name: "Preethi", role: "Developer", img: "https://i.pravatar.cc/90?img=5" },
+      { name: "Naveen Bharathi", role: "Developer", img: "https://i.pravatar.cc/90?img=12" },
     ],
   },
   {
     name: "Attendance Module",
     members: [
-      { name: "Omar Farouk", role: "Frontend Dev", img: "https://i.pravatar.cc/90?img=10" },
-      { name: "Alex Reeves", role: "Backend Dev", img: "https://i.pravatar.cc/90?img=11" },
-      { name: "Nisha Patel", role: "QA Engineer", img: "https://i.pravatar.cc/90?img=12" },
+      { name: "Pandeeswaran", role: "Developer", img: "https://i.pravatar.cc/90?img=13" },
+      { name: "Ahamed Athil Khan", role: "Developer", img: "https://i.pravatar.cc/90?img=14" },
+      { name: "Keerthana", role: "Developer", img: "https://i.pravatar.cc/90?img=9" },
+      { name: "Aashwin", role: "Developer", img: "https://i.pravatar.cc/90?img=15" },
     ],
   },
   {
     name: "TimeTable Module",
     members: [
-      { name: "Rohan Das", role: "Frontend Dev", img: "https://i.pravatar.cc/90?img=14" },
-      { name: "Aisha Patel", role: "Backend Dev", img: "https://i.pravatar.cc/90?img=15" },
-      { name: "Suresh Kumar", role: "QA Engineer", img: "https://i.pravatar.cc/90?img=16" },
-    ],
-  },
-  {
-    name: "Admin Module",
-    members: [
-      { name: "Fatima Zahra", role: "Frontend Dev", img: "https://i.pravatar.cc/90?img=18" },
-      { name: "Lucas Ferreira", role: "Backend Dev", img: "https://i.pravatar.cc/90?img=19" },
-      { name: "Anjali Singh", role: "QA Engineer", img: "https://i.pravatar.cc/90?img=20" },
+      { name: "Sakthi Sundar", role: "Developer", img: "https://i.pravatar.cc/90?img=16" },
+      { name: "Deeba Dharshini", role: "Developer", img: "https://i.pravatar.cc/90?img=1" },
+      { name: "Kanaga Duraga", role: "Developer", img: "https://i.pravatar.cc/90?img=10" },
     ],
   },
 ];
