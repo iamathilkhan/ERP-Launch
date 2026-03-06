@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-// Video served from /public — plain URL avoids Git LFS Vercel issue
-const BG_VIDEO_URL = "/background.webm";
+// Video served directly from GitHub LFS edge cache to completely bypass Vercel's 100MB static asset limit and clone limits
+const BG_VIDEO_URL = "https://github.com/iamathilkhan/ERP-Launch/raw/main/public/background.webm";
 
 interface BackgroundCanvasProps {
   step: "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";

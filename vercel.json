@@ -1,5 +1,5 @@
 {
-    "buildCommand": "git config remote.origin.url https://github.com/iamathilkhan/ERP-Launch.git && git lfs pull && npm run build",
+    "buildCommand": "npm run build",
     "headers": [
         {
             "source": "/(.*)\\.webm",
