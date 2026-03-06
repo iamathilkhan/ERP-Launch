@@ -177,7 +177,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
       ]
     },
     {
-      title: "Attendance Dashboard",
+      title: "Attendance & Leave Management Module",
       type: "staff",
       members: [
         { name: "Mr. K. Velkumar", role: "Assigned Faculty", img: velkumarImg },
