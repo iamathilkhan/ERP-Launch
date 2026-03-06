@@ -26,74 +26,76 @@
   position: relative;
   width: 50%;
   height: 100%;
-  background-color: #8b0000;
-  /* Red Velvet Texture */
+  background-color: #7a0000;
+  /* Natural Spacious Folds Texture */
   background-image: 
-    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.4), transparent),
-    radial-gradient(circle at 50% 0%, rgba(0,0,0,0.3), transparent),
+    /* Primary deep folds */
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0) 15%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(0, 0, 0, 0) 35%,
+      rgba(0, 0, 0, 0.4) 50%
+    ),
+    /* Soft vertical shading */
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(0, 0, 0, 0) 10%,
+      rgba(0, 0, 0, 0) 90%,
+      rgba(0, 0, 0, 0.2) 100%
+    ),
+    /* Velvet micro-texture */
     repeating-linear-gradient(90deg, 
-      #8b0000 0px, 
-      #a52a2a 2px, 
-      #8b0000 4px, 
-      #660000 6px
+      #7a0000 0px, 
+      #8b0000 1px, 
+      #7a0000 2px
     );
-  background-blend-mode: multiply, multiply, normal;
-  transition: transform 5s cubic-bezier(0.45, 0.05, 0.55, 0.95);
-  box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+  background-size: 20% 100%, 100% 100%, 100% 100%;
+  background-blend-mode: multiply, normal, normal;
+  transition: transform 5.5s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.6);
+  z-index: 1;
 }
 
 .curtain.left {
-  transform-origin: left;
-  border-right: 2px solid #ffd700;
+  transform-origin: left bottom;
+  border-right: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .curtain.right {
-  transform-origin: right;
-  border-left: 2px solid #ffd700;
+  transform-origin: right bottom;
+  border-left: 1px solid rgba(255, 215, 0, 0.3);
 }
 
-/* Gold Accent / Edge Glow */
+/* Gold Accent Overlay - More subtle */
 .curtain::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 4px;
-  background: linear-gradient(to bottom, #d4af37, #ffd700, #d4af37);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  width: 3px;
+  background: linear-gradient(to bottom, #b8860b, #ffd700, #b8860b);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  z-index: 2;
 }
 
 .curtain.left::after {
-  right: -2px;
+  right: 0;
 }
 
 .curtain.right::after {
-  left: -2px;
+  left: 0;
 }
 
-/* Shimmer Effect */
-.curtain::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 50%, transparent);
-  background-size: 200% 100%;
-  animation: shimmer 10s infinite linear;
-  pointer-events: none;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Animation Classes */
+/* Natural Gathering Animation */
 .launched .curtain.left {
-  transform: translateX(-100%) scaleX(0.1);
+  transform: translateX(-95%) scaleX(0.05) skewY(1deg);
 }
 
 .launched .curtain.right {
-  transform: translateX(100%) scaleX(0.1);
+  transform: translateX(95%) scaleX(0.05) skewY(-1deg);
 }
 
 /* Inner Content */
