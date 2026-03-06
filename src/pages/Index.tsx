@@ -9,9 +9,10 @@ import DevTeamReveal from "@/components/DevTeamReveal";
 import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
 import SkipButton from "@/components/SkipButton";
+import CurtainLaunch from "@/components/CurtainLaunch";
 import campusnexusLogo from "@/assets/campusnexus.png";
 import batmanLogo from "@/assets/batman logo.png";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Import all images for preloading
 import thanushImg from "@/assets/development_team/Thanush Kumar.jpg";
@@ -57,18 +58,21 @@ const ASSETS_TO_PRELOAD = [
   principalImg, vicePrincipalImg, secretaryImg, jointSecretaryImg
 ];
 
-type Step = "init" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
+type Step = "curtain" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
 
 const Index = () => {
-  const [step, setStep] = useState<Step>("init");
+  const [step, setStep] = useState<Step>("curtain");
   const [showSkip, setShowSkip] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const startSequence = useCallback(() => {
+  const handleCurtainStart = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.volume = 1;
       audioRef.current.play().catch(() => console.log("Audio play failed"));
     }
+  }, []);
+
+  const handleCurtainComplete = useCallback(() => {
     setStep("boot");
   }, []);
 
@@ -105,53 +109,17 @@ const Index = () => {
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-ev-dark">
       <audio ref={audioRef} src={bgm} loop preload="auto" />
-      <BackgroundCanvas step={step === "init" ? "boot" : step} />
+      <BackgroundCanvas step={step === "curtain" ? "boot" : step} />
 
-      {step === "init" && (
-        <motion.div
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.img
-            src={campusnexusLogo}
-            alt="Campus Nexus Logo"
-            className="w-32 h-32 md:w-48 md:h-48 mb-8 object-contain"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ 
-              duration: 1.2,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }}
-            style={{
-              filter: "drop-shadow(0 0 20px rgba(0,200,212,0.4))"
-            }}
+      <AnimatePresence mode="wait">
+        {step === "curtain" && (
+          <CurtainLaunch 
+            key="curtain"
+            onStart={handleCurtainStart}
+            onComplete={handleCurtainComplete} 
           />
-          <motion.button
-            onClick={startSequence}
-            className="font-space px-8 py-3 rounded-md text-sm md:text-base tracking-[0.2em] uppercase cursor-pointer"
-            style={{
-              color: "#00c8d4",
-              border: "1px solid rgba(0,200,212,0.3)",
-              background: "rgba(0,20,30,0.6)",
-              textShadow: "0 0 10px rgba(0,200,212,0.5)",
-              boxShadow: "0 0 20px rgba(0,200,212,0.1)",
-            }}
-            whileHover={{
-              scale: 1.05,
-              background: "rgba(0,200,212,0.1)",
-              borderColor: "rgba(0,200,212,1)",
-              boxShadow: "0 0 30px rgba(0,200,212,0.3)",
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Initialize System
-          </motion.button>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
 
       {step === "boot" && <BootSequence onComplete={advance("network")} />}
       {(step === "network" || step === "convergence") && (
@@ -166,7 +134,7 @@ const Index = () => {
       {step === "finalconv" && <FinalConvergence onComplete={advance("hero")} />}
       {step === "hero" && <FinalHero />}
 
-      {step !== "init" && (
+      {step !== "curtain" && (
         <motion.div 
           className="fixed top-0 left-0 right-0 z-50 pointer-events-none px-6 py-6 flex justify-between items-start"
           initial={{ opacity: 0 }}
