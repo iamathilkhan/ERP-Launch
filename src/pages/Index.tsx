@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
+import bgm from "@/assets/bgm.m4a";
 import BootSequence from "@/components/BootSequence";
 import NetworkFormation from "@/components/NetworkFormation";
 import ConvergencePulse from "@/components/ConvergencePulse";
@@ -14,6 +15,35 @@ type Step = "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalco
 const Index = () => {
   const [step, setStep] = useState<Step>("boot");
   const [showSkip, setShowSkip] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    // Attempt to play the audio on mount
+    const attemptPlay = () => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {
+          // Autoplay blocked: play on first interaction
+          console.log("Autoplay blocked, waiting for interaction");
+        });
+      }
+    };
+    attemptPlay();
+
+    // Set fallback on first user interaction
+    const handleInteraction = () => {
+      attemptPlay();
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+    };
+
+    document.addEventListener("click", handleInteraction);
+    document.addEventListener("keydown", handleInteraction);
+
+    return () => {
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+    };
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setShowSkip(true), 3000);
@@ -44,6 +74,7 @@ const Index = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-ev-dark">
+      <audio ref={audioRef} src={bgm} loop autoPlay preload="auto" />
       <BackgroundCanvas step={step} />
 
       {step === "boot" && <BootSequence onComplete={advance("network")} />}
