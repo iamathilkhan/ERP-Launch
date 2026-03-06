@@ -206,7 +206,7 @@ const BlackholeTransition = ({ url = LINKEDIN_URL, onDone }: BlackholeTransition
             // ══════════════════════════════════════════════════════════
             if (elapsed >= 5.5 && !navigated) {
                 navigated = true;
-                window.open(url, "_blank");
+                window.location.href = url;
                 onDone();
                 return;
             }

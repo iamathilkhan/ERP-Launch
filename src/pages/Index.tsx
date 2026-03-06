@@ -9,8 +9,51 @@ import DevTeamReveal from "@/components/DevTeamReveal";
 import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
 import SkipButton from "@/components/SkipButton";
-
 import { motion } from "framer-motion";
+
+// Import all images for preloading
+import thanushImg from "@/assets/development_team/Thanush Kumar.JPG";
+import logeshImg from "@/assets/development_team/Logesh Kumar.JPG";
+import kaviyaImg from "@/assets/development_team/Kaviya.jpg";
+import srihariImg from "@/assets/development_team/Sri Hari Prasath.JPG";
+import rishikeshImg from "@/assets/development_team/Rishi Kesh.JPG";
+import preethiImg from "@/assets/development_team/Preethi.JPG";
+import naveenImg from "@/assets/development_team/Naveen Bharathi.JPG";
+import pandeeswaranImg from "@/assets/development_team/Pandeeswaran.JPG";
+import akshayaImg from "@/assets/development_team/Akahaya Shri.JPG";
+import athilImg from "@/assets/development_team/Ahamed Athil Khan.JPG";
+import keerthanaImg from "@/assets/development_team/Keerthana.JPG";
+import aashwinImg from "@/assets/development_team/Aashwin.JPG";
+import sakthiImg from "@/assets/development_team/Sakthi Sundar.JPG";
+import deebaImg from "@/assets/development_team/Deeba Dharshini.JPG";
+import kanagaImg from "@/assets/development_team/Kanaga Duraga.JPG";
+import pranavImg from "@/assets/development_team/15 Pranav.JPG";
+import joshikaImg from "@/assets/development_team/33 Palasai Joshika.JPG";
+import ravintharImg from "@/assets/development_team/38 Ravinthar.JPG";
+import sachithImg from "@/assets/development_team/41 Sachithananthan.JPG";
+
+import staff1 from "@/assets/staff_team/Mr. L.S. Vignesh.JPG";
+import staff2 from "@/assets/staff_team/Mr. C. Prathap.JPG";
+import staff3 from "@/assets/staff_team/Mrs. R. Archana.JPG";
+import staff4 from "@/assets/staff_team/Mr. R. UdhayaKumar.JPG";
+import staff5 from "@/assets/staff_team/Ms. Abirami Kayathri.JPG";
+import staff6 from "@/assets/staff_team/Mrs. R. Pavithra.JPG";
+import staff7 from "@/assets/staff_team/Mrs. S. Sai Suganya.JPG";
+import staff8 from "@/assets/staff_team/Mr. K. Velkumar.JPG";
+import staff9 from "@/assets/staff_team/Mrs. M. Bhavani.JPG";
+
+import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.JPG";
+import vicePrincipalImg from "@/assets/spl_thanks/Sathya.jpg";
+import secretaryImg from "@/assets/spl_thanks/Somasundharam.JPG";
+import jointSecretaryImg from "@/assets/spl_thanks/Joint.JPG";
+
+const ASSETS_TO_PRELOAD = [
+  thanushImg, logeshImg, kaviyaImg, srihariImg, rishikeshImg, preethiImg, naveenImg,
+  pandeeswaranImg, akshayaImg, athilImg, keerthanaImg, aashwinImg, sakthiImg,
+  deebaImg, kanagaImg, pranavImg, joshikaImg, ravintharImg, sachithImg,
+  staff1, staff2, staff3, staff4, staff5, staff6, staff7, staff8, staff9,
+  principalImg, vicePrincipalImg, secretaryImg, jointSecretaryImg
+];
 
 type Step = "init" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
 
@@ -28,6 +71,14 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    // Preload all team/staff images proactively with high priority
+    ASSETS_TO_PRELOAD.forEach((src) => {
+      const img = new Image();
+      // @ts-ignore - fetchPriority is an experimental feature in some environments
+      img.fetchPriority = "high";
+      img.src = src;
+    });
+
     const t = setTimeout(() => setShowSkip(true), 3000);
     return () => clearTimeout(t);
   }, []);
@@ -41,14 +92,9 @@ const Index = () => {
     return () => setStep(next);
   }, []);
 
-  // Guard: Step 2 (network) → Step 3 (convergence) only after 16s minimum.
-  // Timeline: A(4s)+B(5s)+C(4s)+D(1.6s)+hold(1s)+E collapse(1.2s)+F travel/text(3s) ≈ 19.8s
-  // NetworkFormation fires onComplete internally via phaseRef at ~19.9s.
-  // This guard ensures no parent re-render can unmount it earlier.
   useEffect(() => {
     if (step === "network") {
       const guard = setTimeout(() => {
-        // No-op safety guard — NetworkFormation's internal timer is the true trigger.
       }, 12000);
       return () => clearTimeout(guard);
     }
@@ -90,7 +136,6 @@ const Index = () => {
       )}
 
       {step === "boot" && <BootSequence onComplete={advance("network")} />}
-      {/* Guard E: keep NetworkFormation mounted through convergence — opacity swap, never unmount */}
       {(step === "network" || step === "convergence") && (
         <NetworkFormation
           onComplete={advance("convergence")}

@@ -7,7 +7,7 @@ interface NetworkFormationProps {
 }
 
 const PRIMARY_LABELS = ["Faculty", "Students", "Exams", "Attendance", "Timetable"];
-const CRIMSON = { r: 155, g: 26, b: 26 };
+const ORANGE = { r: 255, g: 92, b: 53 }; // #ff5c35
 
 // ─── Node types ───────────────────────────────────────────────────────────────
 interface BaseNode { id: string; x: number; y: number; baseX: number; baseY: number; radius: number; alpha: number; }
@@ -170,16 +170,16 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
       // ═════════════════════════════════════════════════════════════
       if (phase === "A" || phase === "B" || phase === "C" || phase === "D") {
 
-        // ── Crimson core glow ───────────────────────────────────────
+        // ── Orange core glow ───────────────────────────────────────
         const coreR = 10;
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 3);
-        g.addColorStop(0, `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},0.85)`);
-        g.addColorStop(0.5, "rgba(155,26,26,0.12)");
+        g.addColorStop(0, `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},0.85)`);
+        g.addColorStop(0.5, `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},0.12)`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         ctx.beginPath(); ctx.arc(cx, cy, coreR * 3, 0, Math.PI * 2);
         ctx.fillStyle = g; ctx.fill();
         ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},0.9)`; ctx.fill();
+        ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},0.9)`; ctx.fill();
 
         // ── PHASE A: 5 primary spokes shoot out ────────────────────
         nodes.primary.forEach((node, i) => {
@@ -228,18 +228,13 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
             const ex = node.parentX + (node.baseX - node.parentX) * easeOut(prog);
             const ey = node.parentY + (node.baseY - node.parentY) * easeOut(prog);
             const lineA = phase === "B" ? 0.45 * prog : 0.22;
-            const isTeal = (Math.floor(idx / SEC_PER_PRIMARY) + j) % 3 !== 0;
             ctx.beginPath(); ctx.moveTo(node.parentX, node.parentY); ctx.lineTo(ex, ey);
-            ctx.strokeStyle = isTeal
-              ? `rgba(0,200,212,${lineA})`
-              : `rgba(224,154,42,${lineA})`;
+            ctx.strokeStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${lineA})`;
             ctx.lineWidth = 0.9; ctx.stroke();
 
             if (prog >= 1) {
               ctx.beginPath(); ctx.arc(node.baseX, node.baseY, node.radius, 0, Math.PI * 2);
-              ctx.fillStyle = isTeal
-                ? `rgba(0,200,212,${node.alpha})`
-                : `rgba(224,154,42,${node.alpha * 0.85})`;
+              ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${node.alpha})`;
               ctx.fill();
             }
           });
@@ -260,12 +255,12 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
             const ey = node.parentY + (node.baseY - node.parentY) * easeOut(prog);
             const lineA = phase === "C" ? 0.3 * prog : 0.14;
             ctx.beginPath(); ctx.moveTo(node.parentX, node.parentY); ctx.lineTo(ex, ey);
-            ctx.strokeStyle = `rgba(0,200,212,${lineA})`;
+            ctx.strokeStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${lineA})`;
             ctx.lineWidth = 0.6; ctx.stroke();
 
             if (prog >= 1) {
               ctx.beginPath(); ctx.arc(node.baseX, node.baseY, node.radius, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(0,200,212,${node.alpha})`; ctx.fill();
+              ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${node.alpha})`; ctx.fill();
             }
           });
         }
@@ -275,10 +270,10 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
           const dEl = elapsed - 5.5;
           const pa = Math.max(0, Math.sin(dEl * Math.PI * 2.5) * 0.7);
           ctx.beginPath(); ctx.arc(cx, cy, 18 + dEl * 55, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(224,154,42,${pa * 0.5})`; ctx.lineWidth = 1; ctx.stroke();
+          ctx.strokeStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${pa * 0.5})`; ctx.lineWidth = 1; ctx.stroke();
           // brighten core
           ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},${Math.min(1, 0.9 + pa * 0.1)})`; ctx.fill();
+          ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${Math.min(1, 0.9 + pa * 0.1)})`; ctx.fill();
         }
       }
 
@@ -304,17 +299,14 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
           ctx.fillStyle = color.replace("$a", String(n.alpha * (1 - e))); ctx.fill();
         };
 
-        nodes.tertiary.forEach(n => drawCollapsing(n, `rgba(0,200,212,$a)`));
-        nodes.secondary.forEach(n => {
-          const isTeal = (parseInt(n.id.split("_")[2]) + parseInt(n.id.split("_")[3] ?? "0")) % 3 !== 0;
-          drawCollapsing(n, isTeal ? `rgba(0,200,212,$a)` : `rgba(224,154,42,$a)`);
-        });
-        nodes.primary.forEach(n => drawCollapsing(n, `rgba(0,200,212,$a)`));
+        nodes.tertiary.forEach(n => drawCollapsing(n, `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},$a)`));
+        nodes.secondary.forEach(n => drawCollapsing(n, `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},$a)`));
+        nodes.primary.forEach(n => drawCollapsing(n, `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},$a)`));
 
-        // Keep-alive crimson dot
+        // Keep-alive orange dot
         const cr = 10 * (1 - e) + 3;
         ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},0.95)`; ctx.fill();
+        ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},0.95)`; ctx.fill();
 
         // Fade labels
         if (labelDivRef.current) {
@@ -349,7 +341,7 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
 
         if (dotAlpha > 0.01) {
           ctx.beginPath(); ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${CRIMSON.r},${CRIMSON.g},${CRIMSON.b},${dotAlpha})`; ctx.fill();
+          ctx.fillStyle = `rgba(${ORANGE.r},${ORANGE.g},${ORANGE.b},${dotAlpha})`; ctx.fill();
         }
 
         if (!dotHandoffDone && fElMs >= HANDOFF_MS) {
@@ -407,15 +399,15 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
           position: "fixed", top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
           whiteSpace: "nowrap",
-          fontFamily: "Orbitron, sans-serif",
-          fontSize: "clamp(1rem, 6vw, 2.8rem)",
-          letterSpacing: "0.25em",
+          fontFamily: "'JetBrains Mono', 'Fira Code', 'Courier New', monospace",
+          fontSize: "clamp(1rem, 6vw, 2.5rem)",
+          letterSpacing: "0.05em",
           opacity: 0, pointerEvents: "none", zIndex: -1,
         }}
       >
-        <span>by </span>
+        <span>NSCET - </span>
         <span ref={iMeasureRef}>ı</span>
-        <span>Spin Team</span>
+        <span>Spin</span>
       </div>
 
       {/* "by iSpin Team" overlay */}
@@ -427,35 +419,36 @@ const NetworkFormation = ({ onComplete }: NetworkFormationProps) => {
           transform: "translate(-50%, -50%)",
           zIndex: 50, textAlign: "center", whiteSpace: "nowrap",
           opacity: 0, transition: "opacity 0.05s linear",
-          letterSpacing: "0.25em",
-          fontFamily: "Orbitron, sans-serif",
-          fontSize: "clamp(1rem, 6vw, 2.8rem)",
+          letterSpacing: "0.05em",
+          fontFamily: "'JetBrains Mono', 'Fira Code', 'Courier New', monospace",
+          fontSize: "clamp(1rem, 6vw, 2.5rem)",
         }}
       >
-        <span style={{ color: "rgba(180,205,215,0.5)", fontWeight: 400 }}>by&nbsp;</span>
+        <span style={{ color: "rgba(180,205,215,0.4)", fontWeight: 400 }}>NSCET - </span>
         <span style={{ position: "relative", display: "inline-block" }}>
-          <span style={{ color: "#9b1a1a", fontWeight: 400 }}>ı</span>
+          <span style={{ color: "#ff5c35", fontWeight: 700 }}>{`{`}</span>
+          <span style={{ color: "#ff5c35", fontWeight: 700 }}>ı</span>
+          <span style={{ color: "#ff5c35", fontWeight: 700 }}>{`}`}</span>
           <span
             ref={dotRef}
             style={{
-              position: "absolute", top: "-0.08em", left: "50%",
+              position: "absolute", top: "0.15em", left: "50%",
               transform: "translateX(-50%)",
-              display: "inline-block", fontSize: "0.55em", lineHeight: 1,
-              color: "#9b1a1a",
-              filter: "drop-shadow(0 0 6px #9b1a1a) drop-shadow(0 0 12px rgba(155,26,26,0.8))",
+              display: "inline-block", fontSize: "0.45em", lineHeight: 1,
+              color: "#ff5c35",
+              filter: "drop-shadow(0 0 6px #ff5c35) drop-shadow(0 0 12px rgba(255,92,53,0.8))",
               opacity: 0,
             }}
             className="ispin-dot"
           >●</span>
         </span>
-        <span style={{ color: "#00c8d4", fontWeight: 400 }}>Spin</span>
-        <span style={{ color: "rgba(180,205,215,0.5)", fontWeight: 400 }}>&nbsp;Team</span>
+        <span style={{ color: "rgba(180,205,215,0.4)", fontWeight: 400 }}>Spin</span>
       </div>
 
       <style>{`
         @keyframes dotPulse {
-          0%   { transform: translateX(-50%) scale(0.85); filter: drop-shadow(0 0 4px #9b1a1a) drop-shadow(0 0 8px rgba(155,26,26,0.6)); opacity: 0.85; }
-          100% { transform: translateX(-50%) scale(1.2);  filter: drop-shadow(0 0 10px #9b1a1a) drop-shadow(0 0 20px rgba(155,26,26,0.9)) drop-shadow(0 0 35px rgba(155,26,26,0.4)); opacity: 1; }
+          0%   { transform: translateX(-50%) scale(0.85); filter: drop-shadow(0 0 4px #ff5c35) drop-shadow(0 0 8px rgba(255,92,53,0.6)); opacity: 0.85; }
+          100% { transform: translateX(-50%) scale(1.2);  filter: drop-shadow(0 0 10px #ff5c35) drop-shadow(0 0 20px rgba(255,92,53,0.9)) drop-shadow(0 0 35px rgba(255,92,53,0.4)); opacity: 1; }
         }
       `}</style>
     </div>

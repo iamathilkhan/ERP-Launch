@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 
 const LINES = [
-  "Initializing Eduvertex Core...",
+  "Initializing Campus Nexus Core...",
   "Establishing Campus Network...",
   "Authenticating Academic Nodes...",
   "Loading Institutional Data Layer...",

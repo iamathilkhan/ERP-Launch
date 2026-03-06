@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import BlackholeTransition from "./BlackholeTransition";
 
-const LINKEDIN_URL = "https://www.linkedin.com/in/ahamed-athil-khan/";
+const ERP_PAGE = "http://localhost:8086/login";
 
 const FinalHero = () => {
   const [showBlackhole, setShowBlackhole] = useState(false);
@@ -18,7 +18,7 @@ const FinalHero = () => {
   return (
     <>
       {showBlackhole && (
-        <BlackholeTransition url={LINKEDIN_URL} onDone={handleDone} />
+        <BlackholeTransition url={ERP_PAGE} onDone={handleDone} />
       )}
 
       <motion.div
@@ -38,7 +38,7 @@ const FinalHero = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
         >
-          EDUVERTEX
+          CAMPUS NEXUS
         </motion.h1>
 
         <motion.p
@@ -75,7 +75,7 @@ const FinalHero = () => {
           }}
           whileTap={{ scale: 0.97 }}
         >
-          Go to Eduvertex
+          Go to Campus Nexus
         </motion.button>
       </motion.div>
     </>
