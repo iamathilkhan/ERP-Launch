@@ -162,7 +162,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
       ]
     },
     {
-      title: "Admin - Role Access Module",
+      title: "Admin (Exam cell , IQAC) Module",
       type: "staff",
       members: [
         { name: "Ms. Abirami Kayathri", role: "Assigned Faculty", img: abiramiImg }
