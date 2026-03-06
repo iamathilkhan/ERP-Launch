@@ -34,10 +34,10 @@ import velkumarImg from "@/assets/staff_team/Mr. K. Velkumar.JPG";
 import bhavaniImg from "@/assets/staff_team/Mrs. M. Bhavani.JPG";
 
 // Special Thanks Images
-import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.JPG";
+import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.jpg";
 import vicePrincipalImg from "@/assets/spl_thanks/Sathya.jpg";
-import secretaryImg from "@/assets/spl_thanks/Somasundharam.JPG";
-import jointSecretaryImg from "@/assets/spl_thanks/Joint.JPG";
+import secretaryImg from "@/assets/spl_thanks/Somasundharam.jpg";
+import jointSecretaryImg from "@/assets/spl_thanks/Joint.jpg";
 import vimalrajImg from "@/assets/spl_thanks/Vimalraj Kanagaraj.jpg";
 import rengarajanImg from "@/assets/spl_thanks/Rengarajan Thiruvengadam.jpg";
 
