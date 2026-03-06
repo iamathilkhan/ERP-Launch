@@ -10,39 +10,21 @@ import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
 import SkipButton from "@/components/SkipButton";
 
-type Step = "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
+import { motion } from "framer-motion";
+
+type Step = "init" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
 
 const Index = () => {
-  const [step, setStep] = useState<Step>("boot");
+  const [step, setStep] = useState<Step>("init");
   const [showSkip, setShowSkip] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
-    // Attempt to play the audio on mount
-    const attemptPlay = () => {
-      if (audioRef.current) {
-        audioRef.current.play().catch(() => {
-          // Autoplay blocked: play on first interaction
-          console.log("Autoplay blocked, waiting for interaction");
-        });
-      }
-    };
-    attemptPlay();
-
-    // Set fallback on first user interaction
-    const handleInteraction = () => {
-      attemptPlay();
-      document.removeEventListener("click", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
-    };
-
-    document.addEventListener("click", handleInteraction);
-    document.addEventListener("keydown", handleInteraction);
-
-    return () => {
-      document.removeEventListener("click", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
-    };
+  const startSequence = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 1;
+      audioRef.current.play().catch(() => console.log("Audio play failed"));
+    }
+    setStep("boot");
   }, []);
 
   useEffect(() => {
@@ -74,8 +56,38 @@ const Index = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-ev-dark">
-      <audio ref={audioRef} src={bgm} loop autoPlay preload="auto" />
-      <BackgroundCanvas step={step} />
+      <audio ref={audioRef} src={bgm} loop preload="auto" />
+      <BackgroundCanvas step={step === "init" ? "boot" : step} />
+
+      {step === "init" && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.button
+            onClick={startSequence}
+            className="font-space px-8 py-3 rounded-md text-sm md:text-base tracking-[0.2em] uppercase cursor-pointer"
+            style={{
+              color: "#00c8d4",
+              border: "1px solid rgba(0,200,212,0.3)",
+              background: "rgba(0,20,30,0.6)",
+              textShadow: "0 0 10px rgba(0,200,212,0.5)",
+              boxShadow: "0 0 20px rgba(0,200,212,0.1)",
+            }}
+            whileHover={{
+              scale: 1.05,
+              background: "rgba(0,200,212,0.1)",
+              borderColor: "rgba(0,200,212,1)",
+              boxShadow: "0 0 30px rgba(0,200,212,0.3)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Initialize System
+          </motion.button>
+        </motion.div>
+      )}
 
       {step === "boot" && <BootSequence onComplete={advance("network")} />}
       {/* Guard E: keep NetworkFormation mounted through convergence — opacity swap, never unmount */}
