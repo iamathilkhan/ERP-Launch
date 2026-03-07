@@ -82,13 +82,33 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    // Preload all team/staff images proactively with high priority
-    ASSETS_TO_PRELOAD.forEach((src) => {
+    // Phase 1: Preload CRITICAL initial assets immediately (Logos, Video, Audio)
+    [campusnexusLogo, batmanLogo].forEach(src => {
       const img = new Image();
-      // @ts-ignore - fetchPriority is an experimental feature in some environments
+      // @ts-ignore
       img.fetchPriority = "high";
       img.src = src;
     });
+
+    // Preload loader video
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.src = loaderVideo;
+
+    // Preload background audio
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.src = bgm;
+
+    // Phase 2: Preload massive secondary assets after initial interaction is possible
+    const timer = setTimeout(() => {
+      ASSETS_TO_PRELOAD.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const advance = useCallback((next: Step) => {

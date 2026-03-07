@@ -56,8 +56,8 @@ const BackgroundCanvas = ({ step }: BackgroundCanvasProps) => {
     resize();
     window.addEventListener("resize", resize);
 
-    // Initialise 60 particles with 3D depth (z)
-    particlesRef.current = Array.from({ length: 60 }, () => ({
+    // Initialise 40 particles with 3D depth (z)
+    particlesRef.current = Array.from({ length: 40 }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
       z: Math.random() * 100, // Depth factor

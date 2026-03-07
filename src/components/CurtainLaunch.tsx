@@ -73,6 +73,8 @@ const CurtainLaunch = ({ onComplete, onStart, onUnveil }: CurtainLaunchProps) =>
           style={{
             filter: "drop-shadow(0 0 20px rgba(0,200,212,0.4))"
           }}
+          // @ts-ignore
+          fetchpriority="high"
         />
 
         <button 
