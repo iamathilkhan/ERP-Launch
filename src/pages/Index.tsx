@@ -72,7 +72,9 @@ const Index = () => {
   }, []);
 
   const handleCurtainComplete = useCallback(() => {
-    // No-op or minor cleanup, the transition to 'boot' happens when the loader ends
+    // Fallback: If the curtains are fully open, we MUST proceed to the boot sequence
+    // even if the loader video hasn't finished yet or failed to play.
+    setStep("boot");
   }, []);
 
   const handleUnveil = useCallback(() => {
@@ -124,6 +126,7 @@ const Index = () => {
                   muted
                   playsInline
                   onEnded={() => setStep("boot")}
+                  onError={() => setStep("boot")}
                   className="w-full h-full object-cover"
                 />
               </div>
