@@ -109,7 +109,7 @@ const CurtainLaunch = ({ onComplete, onStart, onUnveil }: CurtainLaunchProps) =>
           style={{ color: "#ffd700", cursor: "pointer" }}
           onClick={unveil}
         >
-          Click or Press ESC to unveil
+          Launching of CampusNexus
         </p>
       </div>
     </div>
