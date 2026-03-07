@@ -10,24 +10,29 @@ interface CurtainLaunchProps {
 
 const CurtainLaunch = ({ onComplete, onStart }: CurtainLaunchProps) => {
   const [isLaunched, setIsLaunched] = useState(false);
+  const [isTugging, setIsTugging] = useState(false);
   const [shouldRender, setShouldRender] = useState(true);
 
   const unveil = () => {
-    if (isLaunched) return;
+    if (isLaunched || isTugging) return;
     
     // Trigger onStart immediately (to start audio/logic)
     if (onStart) onStart();
     
-    // 40ms delay before adding launched class
-    setTimeout(() => {
-      setIsLaunched(true);
-    }, 40);
+    // Step 1: Initial Tug (brief vibration/movement)
+    setIsTugging(true);
 
-    // 5s animation duration + 70ms cleanup
+    // Step 2: Dramatic Pause (1200ms) before opening
+    setTimeout(() => {
+      setIsTugging(false);
+      setIsLaunched(true);
+    }, 1200);
+
+    // Step 3: Animation Completion (1.2s pause + 8s duration + 100ms cushion)
     setTimeout(() => {
       setShouldRender(false);
       onComplete();
-    }, 5070);
+    }, 9300);
   };
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const CurtainLaunch = ({ onComplete, onStart }: CurtainLaunchProps) => {
 
   return (
     <div 
-      className={`collector-launch-overlay ${isLaunched ? "launched" : ""}`}
+      className={`collector-launch-overlay ${isLaunched ? "launched" : ""} ${isTugging ? "curtain-tug" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="curtain-title"

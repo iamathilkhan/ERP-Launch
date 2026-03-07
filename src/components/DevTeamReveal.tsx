@@ -2,36 +2,36 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Student Images
-import thanushImg from "@/assets/development_team/Thanush Kumar.JPG";
-import logeshImg from "@/assets/development_team/Logesh Kumar.JPG";
+import thanushImg from "@/assets/development_team/Thanush Kumar.jpg";
+import logeshImg from "@/assets/development_team/Logesh Kumar.jpg";
 import kaviyaImg from "@/assets/development_team/Kaviya.jpg";
-import srihariImg from "@/assets/development_team/Sri Hari Prasath.JPG";
-import rishikeshImg from "@/assets/development_team/Rishi Kesh.JPG";
-import preethiImg from "@/assets/development_team/Preethi.JPG";
-import naveenImg from "@/assets/development_team/Naveen Bharathi.JPG";
-import pandeeswaranImg from "@/assets/development_team/Pandeeswaran.JPG";
-import akshayaImg from "@/assets/development_team/Akahaya Shri.JPG";
-import athilImg from "@/assets/development_team/Ahamed Athil Khan.JPG";
-import keerthanaImg from "@/assets/development_team/Keerthana.JPG";
-import aashwinImg from "@/assets/development_team/Aashwin.JPG";
-import sakthiImg from "@/assets/development_team/Sakthi Sundar.JPG";
-import deebaImg from "@/assets/development_team/Deeba Dharshini.JPG";
-import kanagaImg from "@/assets/development_team/Kanaga Duraga.JPG";
-import pranavImg from "@/assets/development_team/15 Pranav.JPG";
-import joshikaImg from "@/assets/development_team/33 Palasai Joshika.JPG";
-import ravintharImg from "@/assets/development_team/38 Ravinthar.JPG";
-import sachithImg from "@/assets/development_team/41 Sachithananthan.JPG";
+import srihariImg from "@/assets/development_team/Sri Hari Prasath.jpg";
+import rishikeshImg from "@/assets/development_team/Rishi Kesh.jpg";
+import preethiImg from "@/assets/development_team/Preethi.jpg";
+import naveenImg from "@/assets/development_team/Naveen Bharathi.jpg";
+import pandeeswaranImg from "@/assets/development_team/Pandeeswaran.jpg";
+import akshayaImg from "@/assets/development_team/Akahaya Shri.jpg";
+import athilImg from "@/assets/development_team/Ahamed Athil Khan.jpg";
+import keerthanaImg from "@/assets/development_team/Keerthana.jpg";
+import aashwinImg from "@/assets/development_team/Aashwin.jpg";
+import sakthiImg from "@/assets/development_team/Sakthi Sundar.jpg";
+import deebaImg from "@/assets/development_team/Deeba Dharshini.jpg";
+import kanagaImg from "@/assets/development_team/Kanaga Duraga.jpg";
+import pranavImg from "@/assets/development_team/15 Pranav.jpg";
+import joshikaImg from "@/assets/development_team/33 Palasai Joshika.jpg";
+import ravintharImg from "@/assets/development_team/38 Ravinthar.jpg";
+import sachithImg from "@/assets/development_team/41 Sachithananthan.jpg";
 
 // Staff Images
 import vigneshImg from "@/assets/staff_team/Mr. L.S. Vignesh.jpg";
-import prathapImg from "@/assets/staff_team/Mr. C. Prathap.JPG";
-import archanaImg from "@/assets/staff_team/Mrs. R. Archana.JPG";
-import udhayaImg from "@/assets/staff_team/Mr. R. UdhayaKumar.JPG";
-import abiramiImg from "@/assets/staff_team/Ms. Abirami Kayathri.JPG";
-import pavithraImg from "@/assets/staff_team/Mrs. R. Pavithra.JPG";
-import saisuganyaImg from "@/assets/staff_team/Mrs. S. Sai Suganya.JPG";
-import velkumarImg from "@/assets/staff_team/Mr. K. Velkumar.JPG";
-import bhavaniImg from "@/assets/staff_team/Mrs. M. Bhavani.JPG";
+import prathapImg from "@/assets/staff_team/Mr. C. Prathap.jpg";
+import archanaImg from "@/assets/staff_team/Mrs. R. Archana.jpg";
+import udhayaImg from "@/assets/staff_team/Mr. R. UdhayaKumar.jpg";
+import abiramiImg from "@/assets/staff_team/Ms. Abirami Kayathri.jpg";
+import pavithraImg from "@/assets/staff_team/Mrs. R. Pavithra.jpg";
+import saisuganyaImg from "@/assets/staff_team/Mrs. S. Sai Suganya.jpg";
+import velkumarImg from "@/assets/staff_team/Mr. K. Velkumar.jpg";
+import bhavaniImg from "@/assets/staff_team/Mrs. M. Bhavani.jpg";
 
 // Special Thanks Images
 import principalImg from "@/assets/spl_thanks/Mathalai Sundharam.jpg";
@@ -159,12 +159,6 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
       type: "staff",
       members: [
         { name: "Mr. R. UdhayaKumar", role: "Assigned Faculty", img: udhayaImg },
-      ]
-    },
-    {
-      title: "Admin (Exam cell , IQAC) Module",
-      type: "staff",
-      members: [
         { name: "Ms. Abirami Kayathri", role: "Assigned Faculty", img: abiramiImg }
       ]
     },
@@ -414,7 +408,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                     ))
                   ) : (
                     <div className="space-y-4">
-                      {THANKS_DATA[currentThanksIndex].names?.map((name, i) => (
+                      {THANKS_DATA[currentThanksIndex].members?.map((member, i) => (
                         <motion.p
                           key={i}
                           className="font-space text-base md:text-xl text-ev-body/90 tracking-wide"
@@ -423,7 +417,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
                           transition={{ delay: 0.3 + i * 0.1 }}
                         >
                           <span className="text-[#ff5c35] mr-3">→</span>
-                          {name}
+                          {typeof member === 'string' ? member : member.name}
                         </motion.p>
                       ))}
                     </div>

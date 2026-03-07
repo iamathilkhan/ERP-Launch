@@ -8,10 +8,10 @@ import MatrixSequence from "@/components/MatrixSequence";
 import DevTeamReveal from "@/components/DevTeamReveal";
 import FinalConvergence from "@/components/FinalConvergence";
 import FinalHero from "@/components/FinalHero";
-import SkipButton from "@/components/SkipButton";
 import CurtainLaunch from "@/components/CurtainLaunch";
 import campusnexusLogo from "@/assets/campusnexus.png";
 import batmanLogo from "@/assets/batman logo.png";
+import loaderVideo from "@/assets/loader.mp4";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import all images for preloading
@@ -58,11 +58,10 @@ const ASSETS_TO_PRELOAD = [
   principalImg, vicePrincipalImg, secretaryImg, jointSecretaryImg
 ];
 
-type Step = "curtain" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
+type Step = "curtain" | "loader" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
 
 const Index = () => {
   const [step, setStep] = useState<Step>("curtain");
-  const [showSkip, setShowSkip] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleCurtainStart = useCallback(() => {
@@ -73,7 +72,7 @@ const Index = () => {
   }, []);
 
   const handleCurtainComplete = useCallback(() => {
-    setStep("boot");
+    setStep("loader");
   }, []);
 
   useEffect(() => {
@@ -84,14 +83,6 @@ const Index = () => {
       img.fetchPriority = "high";
       img.src = src;
     });
-
-    const t = setTimeout(() => setShowSkip(true), 3000);
-    return () => clearTimeout(t);
-  }, []);
-
-  const handleSkip = useCallback(() => {
-    setStep("hero");
-    setShowSkip(false);
   }, []);
 
   const advance = useCallback((next: Step) => {
@@ -109,19 +100,57 @@ const Index = () => {
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-ev-dark">
       <audio ref={audioRef} src={bgm} loop preload="auto" />
-      <BackgroundCanvas step={step === "curtain" ? "boot" : step} />
+      <BackgroundCanvas step={step === "curtain" || step === "loader" ? "boot" : step} />
 
       <AnimatePresence mode="wait">
         {step === "curtain" && (
-          <CurtainLaunch 
-            key="curtain"
-            onStart={handleCurtainStart}
-            onComplete={handleCurtainComplete} 
-          />
+          <motion.div
+            key="curtain-container"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <CurtainLaunch 
+              onStart={handleCurtainStart}
+              onComplete={handleCurtainComplete} 
+            />
+          </motion.div>
         )}
       </AnimatePresence>
 
-      {step === "boot" && <BootSequence onComplete={advance("network")} />}
+      <AnimatePresence mode="wait">
+        {step === "loader" && (
+          <motion.div
+            key="loader-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+          >
+            <video
+              src={loaderVideo}
+              autoPlay
+              muted
+              playsInline
+              onEnded={() => setStep("boot")}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {step === "boot" && (
+          <motion.div
+            key="boot-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <BootSequence onComplete={advance("network")} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {(step === "network" || step === "convergence") && (
         <NetworkFormation
           onComplete={advance("convergence")}
@@ -155,8 +184,6 @@ const Index = () => {
           />
         </motion.div>
       )}
-
-      <SkipButton visible={showSkip && step !== "hero"} onSkip={handleSkip} />
     </div>
   );
 };
