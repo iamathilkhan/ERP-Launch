@@ -59,9 +59,10 @@ const ASSETS_TO_PRELOAD = [
 ];
 
 type Step = "curtain" | "loader" | "boot" | "network" | "convergence" | "matrix" | "devteam" | "finalconv" | "hero";
-
 const Index = () => {
   const [step, setStep] = useState<Step>("curtain");
+  const [curtainDone, setCurtainDone] = useState(false);
+  const [videoDone, setVideoDone] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleCurtainStart = useCallback(() => {
@@ -72,14 +73,18 @@ const Index = () => {
   }, []);
 
   const handleCurtainComplete = useCallback(() => {
-    // Fallback: If the curtains are fully open, we MUST proceed to the boot sequence
-    // even if the loader video hasn't finished yet or failed to play.
-    setStep("boot");
+    setCurtainDone(true);
   }, []);
 
   const handleUnveil = useCallback(() => {
     setStep("loader");
   }, []);
+
+  useEffect(() => {
+    if ((step === "loader" || step === "curtain") && curtainDone && videoDone) {
+      setStep("boot");
+    }
+  }, [curtainDone, videoDone, step]);
 
   useEffect(() => {
     // Phase 1: Preload CRITICAL initial assets immediately (Logos, Video, Audio)
@@ -145,17 +150,17 @@ const Index = () => {
                   autoPlay
                   muted
                   playsInline
-                  onEnded={() => setStep("boot")}
-                  onError={() => setStep("boot")}
+                  onEnded={() => setVideoDone(true)}
+                  onError={() => setVideoDone(true)}
                   className="w-full h-full object-cover"
                 />
               </div>
             )}
-            
-            <CurtainLaunch 
+
+            <CurtainLaunch
               onStart={handleCurtainStart}
               onUnveil={handleUnveil}
-              onComplete={handleCurtainComplete} 
+              onComplete={handleCurtainComplete}
             />
           </motion.div>
         )}
@@ -238,22 +243,22 @@ const Index = () => {
       </AnimatePresence>
 
       {step !== "curtain" && step !== "loader" && (
-        <motion.div 
+        <motion.div
           className="fixed top-0 left-0 right-0 z-[200] pointer-events-none px-6 py-6 flex justify-between items-start"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <img 
-            src={campusnexusLogo} 
-            alt="Campus Nexus" 
+          <img
+            src={campusnexusLogo}
+            alt="Campus Nexus"
             className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
             style={{ filter: "drop-shadow(0 0 10px rgba(0,200,212,0.3))" }}
             loading="eager"
           />
-          <img 
-            src={batmanLogo} 
-            alt="Nexus Ops" 
+          <img
+            src={batmanLogo}
+            alt="Nexus Ops"
             className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
             style={{ filter: "drop-shadow(0 0 10px rgba(155,26,26,0.3))" }}
             loading="eager"
