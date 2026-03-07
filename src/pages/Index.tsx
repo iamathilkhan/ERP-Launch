@@ -128,13 +128,13 @@ const Index = () => {
       <audio ref={audioRef} src={bgm} loop preload="auto" />
       <BackgroundCanvas step={step === "curtain" || step === "loader" ? "boot" : step} />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {(step === "curtain" || step === "loader") && (
           <motion.div
             key="launch-layer"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.6 }}
             className="fixed inset-0 z-[100]"
           >
             {/* The loader plays behind the curtains */}
@@ -172,22 +172,74 @@ const Index = () => {
             <BootSequence onComplete={advance("network")} />
           </motion.div>
         )}
+        {(step === "network" || step === "convergence") && (
+          <motion.div
+            key="network-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <NetworkFormation
+              onComplete={advance("convergence")}
+              style={{ opacity: step === "network" ? 1 : 0, pointerEvents: "none" } as React.CSSProperties}
+            />
+          </motion.div>
+        )}
+        {step === "convergence" && (
+          <motion.div
+            key="conv-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ConvergencePulse onComplete={advance("matrix")} />
+          </motion.div>
+        )}
+        {step === "matrix" && (
+          <motion.div
+            key="matrix-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <MatrixSequence onComplete={advance("devteam")} />
+          </motion.div>
+        )}
+        {step === "devteam" && (
+          <motion.div
+            key="dev-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <DevTeamReveal onComplete={advance("finalconv")} />
+          </motion.div>
+        )}
+        {step === "finalconv" && (
+          <motion.div
+            key="final-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <FinalConvergence onComplete={advance("hero")} />
+          </motion.div>
+        )}
+        {step === "hero" && (
+          <motion.div
+            key="hero-step"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <FinalHero />
+          </motion.div>
+        )}
       </AnimatePresence>
-      {(step === "network" || step === "convergence") && (
-        <NetworkFormation
-          onComplete={advance("convergence")}
-          style={{ opacity: step === "network" ? 1 : 0, pointerEvents: "none" } as React.CSSProperties}
-        />
-      )}
-      {step === "convergence" && <ConvergencePulse onComplete={advance("matrix")} />}
-      {step === "matrix" && <MatrixSequence onComplete={advance("devteam")} />}
-      {step === "devteam" && <DevTeamReveal onComplete={advance("finalconv")} />}
-      {step === "finalconv" && <FinalConvergence onComplete={advance("hero")} />}
-      {step === "hero" && <FinalHero />}
 
-      {step !== "curtain" && (
+      {step !== "curtain" && step !== "loader" && (
         <motion.div 
-          className="fixed top-0 left-0 right-0 z-50 pointer-events-none px-6 py-6 flex justify-between items-start"
+          className="fixed top-0 left-0 right-0 z-[200] pointer-events-none px-6 py-6 flex justify-between items-start"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -197,12 +249,14 @@ const Index = () => {
             alt="Campus Nexus" 
             className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
             style={{ filter: "drop-shadow(0 0 10px rgba(0,200,212,0.3))" }}
+            loading="eager"
           />
           <img 
             src={batmanLogo} 
             alt="Nexus Ops" 
             className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
             style={{ filter: "drop-shadow(0 0 10px rgba(155,26,26,0.3))" }}
+            loading="eager"
           />
         </motion.div>
       )}

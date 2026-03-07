@@ -75,6 +75,7 @@ const CurtainLaunch = ({ onComplete, onStart, onUnveil }: CurtainLaunchProps) =>
           }}
           // @ts-ignore
           fetchpriority="high"
+          loading="eager"
         />
 
         <button 
