@@ -72,6 +72,10 @@ const Index = () => {
   }, []);
 
   const handleCurtainComplete = useCallback(() => {
+    // No-op or minor cleanup, the transition to 'boot' happens when the loader ends
+  }, []);
+
+  const handleUnveil = useCallback(() => {
     setStep("loader");
   }, []);
 
@@ -103,37 +107,32 @@ const Index = () => {
       <BackgroundCanvas step={step === "curtain" || step === "loader" ? "boot" : step} />
 
       <AnimatePresence mode="wait">
-        {step === "curtain" && (
+        {(step === "curtain" || step === "loader") && (
           <motion.div
-            key="curtain-container"
+            key="launch-layer"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 1 }}
+            className="fixed inset-0 z-[100]"
           >
+            {/* The loader plays behind the curtains */}
+            {step === "loader" && (
+              <div className="fixed inset-0 z-0 bg-black flex items-center justify-center">
+                <video
+                  src={loaderVideo}
+                  autoPlay
+                  muted
+                  playsInline
+                  onEnded={() => setStep("boot")}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            
             <CurtainLaunch 
               onStart={handleCurtainStart}
+              onUnveil={handleUnveil}
               onComplete={handleCurtainComplete} 
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence mode="wait">
-        {step === "loader" && (
-          <motion.div
-            key="loader-step"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
-          >
-            <video
-              src={loaderVideo}
-              autoPlay
-              muted
-              playsInline
-              onEnded={() => setStep("boot")}
-              className="w-full h-full object-cover"
             />
           </motion.div>
         )}

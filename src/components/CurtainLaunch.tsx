@@ -6,9 +6,10 @@ import "./CurtainLaunch.css";
 interface CurtainLaunchProps {
   onComplete: () => void;
   onStart?: () => void;
+  onUnveil?: () => void;
 }
 
-const CurtainLaunch = ({ onComplete, onStart }: CurtainLaunchProps) => {
+const CurtainLaunch = ({ onComplete, onStart, onUnveil }: CurtainLaunchProps) => {
   const [isLaunched, setIsLaunched] = useState(false);
   const [isTugging, setIsTugging] = useState(false);
   const [shouldRender, setShouldRender] = useState(true);
@@ -26,6 +27,7 @@ const CurtainLaunch = ({ onComplete, onStart }: CurtainLaunchProps) => {
     setTimeout(() => {
       setIsTugging(false);
       setIsLaunched(true);
+      if (onUnveil) onUnveil();
     }, 1200);
 
     // Step 3: Animation Completion (1.2s pause + 8s duration + 100ms cushion)
