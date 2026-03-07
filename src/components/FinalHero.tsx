@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import BlackholeTransition from "./BlackholeTransition";
 import campusnexusLogo from "@/assets/campusnexus.png";
 
-const ERP_PAGE = "http://localhost:8086/login";
+const ERP_PAGE = "http://192.168.30.60/login";
 
 const FinalHero = () => {
   const [showBlackhole, setShowBlackhole] = useState(false);

@@ -102,7 +102,7 @@ const CurtainLaunch = ({ onComplete, onStart, onUnveil }: CurtainLaunchProps) =>
             e.currentTarget.style.transform = "scale(1)";
           }}
         >
-          Initiate System & Begin Presentation
+          Initiate System
         </button>
         <p 
           className="font-space mt-6 text-xs tracking-[0.2em] uppercase opacity-60"
