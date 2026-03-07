@@ -127,7 +127,7 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
       title: "Secretary / Joint Secretary",
       type: "staff",
       members: [
-        { name: "Somasundharam", role: "Secretary, NSCET", img: secretaryImg },
+        { name: "Er.A.S.S.Somasundharam", role: "Secretary, NSCET", img: secretaryImg },
         { name: "Mr. T. Subramani", role: "Joint Secretary, NSCET", img: jointSecretaryImg }
       ]
     },
@@ -135,8 +135,8 @@ const DevTeamReveal = ({ onComplete }: DevTeamRevealProps) => {
       title: "Principal / Vice-Principal",
       type: "staff",
       members: [
-        { name: "Mathalai Sundharam", role: "Principal, NSCET", img: principalImg },
-        { name: "Sathya", role: "Vice-Principal, NSCET", img: vicePrincipalImg }
+        { name: "Dr.C.Mathalai Sundharam", role: "Principal, NSCET", img: principalImg },
+        { name: "Dr.M.Sathya", role: "Vice-Principal, NSCET", img: vicePrincipalImg }
       ]
     },
     {
