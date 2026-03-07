@@ -172,7 +172,7 @@ const Index = () => {
             <BootSequence onComplete={advance("network")} />
           </motion.div>
         )}
-        {(step === "network" || step === "convergence") && (
+        {step === "network" && (
           <motion.div
             key="network-step"
             initial={{ opacity: 0 }}
@@ -181,7 +181,7 @@ const Index = () => {
           >
             <NetworkFormation
               onComplete={advance("convergence")}
-              style={{ opacity: step === "network" ? 1 : 0, pointerEvents: "none" } as React.CSSProperties}
+              style={{ opacity: 1, pointerEvents: "none" } as React.CSSProperties}
             />
           </motion.div>
         )}

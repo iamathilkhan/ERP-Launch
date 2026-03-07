@@ -107,6 +107,8 @@
 
 .launched .curtain.right {
   transform: translateX(95%) scaleX(0.05) skewY(-1deg);
+  z-index: 1;
+  will-change: transform;
 }
 
 /* Inner Content */
@@ -115,6 +117,7 @@
   z-index: 10;
   text-align: center;
   transition: opacity 80ms ease;
+  will-change: transform, opacity;
 }
 
 .launched .curtain-content {
